@@ -3,12 +3,16 @@ const express = require('express');
 const path = require('path');
 const url = require('url');
 const queries = require('./queries.js');
+const bodyParser = require('body-parser');
+
 const app = express();
 
 // set up port listening
 const PORT = process.env.PORT || 5000;
 // specify where static files should be retrieved from
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.urlencoded({ extended: true })); // supports encoded bodies
+app.use(bodyParser.json()); // supports json encoded bodies
 // specify where views are retrieved from
 app.set('views', path.join(__dirname, 'views'));
 // specify view engine

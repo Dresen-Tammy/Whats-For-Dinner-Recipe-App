@@ -9,8 +9,8 @@ var queries = {};
 queries.createChef = function (req,res) {
     console.log('hello from createChef');
     // get post data from req, 
-    var username = 'david';
-    var password = 'password';
+    var username = req.body.username;
+    var password = req.body.password;
     const q1 = db.one('INSERT INTO chef VALUES (default, $1, $2) RETURNING username', [username, password])
       .then((q1)=> {
           console.log(q1)
