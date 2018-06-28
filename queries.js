@@ -1,7 +1,9 @@
-const pg = require('pg-promise')({}); // require pg-promise, takes extra variable of object.
-var conString = 'postgres://localhost:5432/recipes';  // connection to database, need to replace with heroku.
-const db = pg(conString);  // use pg to connect to database
+const pgp = require('pg-promise')({}); // require pg-promise, takes extra variable of object.
+const conString = process.env.DATABASE_URL;  // connection to database, need to replace with heroku.
+const db = pgp(conString);  // use pg to connect to database
 const url = require('url'); // url will parse url
+const bodyParser = require('body-parser');
+
 
 // queries is an object hat will ahve several methods. When queries is required in index.js, methods are available
 var queries = {};
@@ -9,8 +11,9 @@ var queries = {};
 queries.createChef = function (req,res) {
     console.log('hello from createChef');
     // get post data from req, 
-    var username = 'david';
-    var password = 'password';
+    
+    var username = req.body.username;
+    var password = req.body.password;
     const q1 = db.one('INSERT INTO chef VALUES (default, $1, $2) RETURNING username', [username, password])
       .then((q1)=> {
           console.log(q1)
