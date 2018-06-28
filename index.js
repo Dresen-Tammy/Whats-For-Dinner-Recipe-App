@@ -1,4 +1,5 @@
 // require modules
+const cool = require('cool-ascii-faces')
 const express = require('express');
 const path = require('path');
 const url = require('url');
@@ -6,7 +7,7 @@ const queries = require('./queries.js');
 const app = express();
 
 // set up port listening
-const PORT = process.env.PORT || 4100;
+const PORT = process.env.PORT || 5000;
 // specify where static files should be retrieved from
 app.use(express.static(path.join(__dirname, 'public')));
 // specify where views are retrieved from
