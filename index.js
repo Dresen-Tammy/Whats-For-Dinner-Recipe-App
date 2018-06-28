@@ -3,8 +3,6 @@ const express = require('express');
 const path = require('path');
 const url = require('url');
 const queries = require('./queries.js');
-
-
 const app = express();
 
 // set up port listening
