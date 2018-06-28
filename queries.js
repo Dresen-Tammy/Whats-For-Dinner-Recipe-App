@@ -1,6 +1,6 @@
-const pgp = require('pg-promise')({}); // require pg-promise, takes extra variable of object.
+const pg = require('pg-promise')({}); // require pg-promise, takes extra variable of object.
 const conString = process.env.DATABASE_URL;  // connection to database, need to replace with heroku.
-const db = pgp(conString);  // use pg to connect to database
+const db = pg(conString);  // use pg to connect to database
 const url = require('url'); // url will parse url
 
 
