@@ -22,8 +22,11 @@ app.use(bodyParser.json()); // supports json encoded bodies
 app.get('/', function(req,res) {
     res.render('pages/login');
 })
+app.get('/register', function(req,res){
+    res.render('pages/register');
+})
 app.get('/login/:username/:password', logic.login);
-app.post('/register', logic.register);
+app.post('/registration', logic.register);
 app.post('/addFavorite', logic.addFavorite);
 app.get('/getFavorites/:chef_id', logic.getFavorites);
 app.delete('/deleteFavorite', logic.deleteFavorite);
