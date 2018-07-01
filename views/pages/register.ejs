@@ -7,15 +7,12 @@
 <h1>Register</h1>
 
 <form method="POST" action="/registration"><br>
-    <label for="username">Username</label><br>
-    <input name="username" type="text"><br>
+    <label for="username">Username placeholder="Name"</label><br>
+    <input name="username" type="text" placeholder="Name"><br>
     <label for="password">Password</label><br>
-    <input name="password" type="text"><br><br>
+    <input name="password" type="text" placeholder="password"><br><br>
     <input type="submit" value="Submit">
 </form>
-
-
-
 
 
 
@@ -23,17 +20,17 @@
 
 <form method="POST" action="/addFavorite"><br>
     <label for="chef_id">Chef Id</label><br>
-    <input name="chef_id" type="chef_id"><br>
+    <input name="chef_id" type="chef_id" value="1"><br>
     <label for="f2f_rid">Recipe Id</label><br>
-    <input name="f2f_rid" type="number"><br>
+    <input name="f2f_rid" type="number" value="5555"><br>
     <label for="recipe_name">recipe_name</label><br>
-    <input name="recipe_name" type="text"><br><br>
+    <input name="recipe_name" type="text" value="California-Style Ranch Burger"><br><br>
     <label for="imageurl">imageurl</label><br>
-    <input name="imageurl" type="url"><br><br>
+    <input name="imageurl" type="url" value="http://static.food2fork.com/982862c804.jpg"><br><br>
     <label for="source">source</label><br>
-    <input name="source" type="url"><br><br>
+    <input name="source" type="url" value="http://allrecipes.com/Recipe/California-Style-Ranch-Burger/Detail.aspx"><br><br>
     <label for="ingredients">ingredients</label><br>
-    <input name="ingredients"><br><br>
+    <input name="ingredients" value='{"1 pound lean ground beef", "1 (1 ounce) package original ranch salad dressing mix, divided usage", "1 cup Daisy Brand Sour Cream, divided usage", "4 hamburger buns, lightly grilled if desired", "4 large lettuce leaves", "1/4 tomato, diced", "1/4 red onion, diced"}'><br><br>
     <input type="submit" value="Submit">
 </form>
 
