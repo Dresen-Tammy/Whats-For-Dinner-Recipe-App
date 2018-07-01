@@ -80,13 +80,13 @@ logic.addFavorite = function(req, res) {
     var ingredients = req.body.ingredient;
     // check to make sure vars are not empty
      if (chef_id == undefined || f2f_rid == undefined || recipe_name == undefined || imageurl == undefined ) {
-        res.status(500).json({success:false, message: "Error adding to favorites."});
+        res.status(500).json({success:false, message: "Error Empty fields."});
     } else {
         // check to see if recipe is in database.
         access.getRecipeFromDb(f2f_rid, function(err, result) {
             
             if (err) {
-                res.status(500).json({success:false, message: "error adding to favorites."});
+                res.status(500).json({success:false, message: "error getting recipe."});
             } else if (result[0] !== undefined) {
                 console.log('recipe in db');
             } else {   
@@ -104,7 +104,7 @@ logic.addFavorite = function(req, res) {
             // save to favorites.
             access.setFavoriteInDb(recipe_id, chef_id, function(err, result) {
                 if (err) {
-                    res.status(500).json({success:false, message: "Error adding to favorites."});
+                    res.status(500).json({success:false, message: "Error setting favorite."});
                 } else {
                     res.json({success:true, message: "Added to favorites"})
                 }
