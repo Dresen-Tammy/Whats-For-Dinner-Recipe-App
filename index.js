@@ -27,6 +27,9 @@ app.get('/register', function(req,res){
 })
 app.get('/login/:username/:password', logic.login);
 app.post('/registration', logic.register);
+app.get('/favorites', function(req,res) {
+    res.render('pages/addFavorites');
+})
 app.post('/addFavorite', logic.addFavorite);
 app.get('/getFavorites/:chef_id', logic.getFavorites);
 app.delete('/deleteFavorite', logic.deleteFavorite);
