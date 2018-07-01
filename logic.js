@@ -69,7 +69,7 @@ logic.getFavorites = function(req,res) {
     })
 }
 
-logic.addFavorite = function(req, res) {
+/* logic.addFavorite = function(req, res) {
     console.log('addingFavorite');
     var chef_id = req.body.chef_id;
     var f2f_rid = req.body.f2f_rid;
@@ -111,7 +111,7 @@ logic.addFavorite = function(req, res) {
             })
         })
     }
-}
+} */
 logic.deleteFavorite = function (req, res) {
     const chef_id = req.body.chef_id;
     const recipe_id = req.body.recipe_id;
