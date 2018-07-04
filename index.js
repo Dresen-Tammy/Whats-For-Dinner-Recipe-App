@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const logic = require('./logic.js');
+const api = require('./api.js');
 
 const app = express();
 
@@ -19,6 +20,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: false})); // supports encoded bodies
 app.use(bodyParser.json()); // supports json encoded bodies
 
+// temporary pages for testing
+
 app.get('/', function(req,res) {
     res.render('pages/login');
 })
@@ -27,15 +30,13 @@ app.get('/register', function(req,res){
 })
 app.get('/login/:username/:password', logic.login);
 app.post('/registration', logic.register);
-app.get('/favorites', function(req,res) {
-    res.render('pages/addFavorites');
-})
+
 app.post('/addFavorite', logic.addFavorite);
 app.get('/getFavorites/:chef_id', logic.getFavorites);
 app.delete('/deleteFavorite', logic.deleteFavorite);
 app.get('/allRecipes', logic.getAllRecipes);
-app.get('/searchRecipes/:keyword/:page', logic.searchRecipes);
-app.get('/viewRecipe/:f2f_rid', logic.viewRecipe);
+app.get('/searchRecipes/:keyword/:page', api.searchRecipes);
+app.get('/viewRecipe/:f2f_rid', api.viewRecipe);
 
 
 // run on port */

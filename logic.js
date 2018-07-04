@@ -1,7 +1,6 @@
 const access = require('./access.js');
 const fetch = require('node-fetch');
 const http = require('http');
-const food_url = 
 var logic = {};
 
 
@@ -153,16 +152,7 @@ logic.searchRecipes = function(req, res) {
     .then(data => console.log(data));   
     }
     
-logic.viewRecipe = function(req, res) {
-    const f2f_rid = req.params.f2f_rid;
-    const key = process.env.F2F_KEY;
-    const url = "http://food2fork.com/api/get?key=" + key + "&rId=" + f2f_rid; 
-    fetch(url).then(function(result) {
-        return result.json();
-    }).then(function(json) {
-        res.json(json);
-    })
-}
+
 
 
 
