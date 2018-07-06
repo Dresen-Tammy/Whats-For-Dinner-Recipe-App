@@ -35,12 +35,12 @@ app.get('/registration', function(req,res){
     });
 })
 app.get('/login/:username/:password', logic.login);
-app.post('/register', logic.register);
+app.post('/register', logic.register); //logic.register
 
 app.post('/addFavorite', logic.addFavorite);
 app.get('/favorites', function(req,res) {
     res.render('pages/recipeList.ejs', {
-        title: 'Dig In!',
+        title: "What's For Dinner?",
         link: 'searchRecipes',
         galleryTitle: ""
     });

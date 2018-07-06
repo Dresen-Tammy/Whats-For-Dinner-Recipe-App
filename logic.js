@@ -19,11 +19,10 @@ logic.login = function (req, res) {
             if (result[0].password == password) {
                 console.log(result[0]);
                 // add session or cookie to store chef_id
-                        res.json(result[0])
+                        res.json({chef_id: result[0].id, username: result[0].username});
                             // send id from session or cookie 
                  
-            }
-            else {
+            } else {
                 res.status(500).json({success:false, message: "Username or password is incorrect."})
             }
             
