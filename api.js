@@ -10,7 +10,7 @@ var api = {};
 
 /* GET recipes */
 api.viewRecipe = function(req, res, next) {
-    var rId = req.params.f2f_rid;
+    var rId = req.params.recipe_id;
     var request;
     request = f2f_get_url+"rId=" + rId;
     axios.get(request)
@@ -29,6 +29,7 @@ api.searchRecipes = function(req,res,next) {
     var request = f2f_search_url+"&q="+keyword+"&page="+page;
     axios.get(request)
          .then((response)=> {
+             console.log(response)
              res.json(response.data);
          }).catch((error)=> {
              console.log(error);

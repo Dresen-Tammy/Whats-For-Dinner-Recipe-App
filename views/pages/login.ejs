@@ -1,10 +1,20 @@
+<% include ../partials/header %>
 <h1>Login</h1>
+<div class="error" id="error"></div>
+</div>
+<div id="userInput">
+    <label for="username">Username</label><br>
+    <input name="username" type="text" id="username"><br>
+    <label for="password">Password</label><br>
+    <input name="password" type="text" id="password"><br><br>
+    <input type="button" value="login" id="login" onclick="loginUser()"><br>
+    Not a member?<input type="button" value="register" onclick="registerUser()">
+</div>
+<div id="output">
+    <ul class="recipeList">
+
+    </ul>
 
 </div>
-<form method="GET" action="login"><br>
-    <label for="username">Username</label><br>
-    <input name="username" type="text"><br>
-    <label for="password">Password</label><br>
-    <input name="password" type="text"><br><br>
-    <input type="submit" value="Submit">
-</form>
+
+<% include ../partials/footer %>

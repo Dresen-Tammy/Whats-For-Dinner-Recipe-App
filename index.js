@@ -23,20 +23,33 @@ app.use(bodyParser.json()); // supports json encoded bodies
 // temporary pages for testing
 
 app.get('/', function(req,res) {
-    res.render('pages/login');
+    res.render('pages/login', {
+        title: 'Login',
+        link: 'login'
+    });
 })
-app.get('/register', function(req,res){
-    res.render('pages/register');
+app.get('/registration', function(req,res){
+    res.render('pages/login', {
+        title: 'Register',
+        link: 'Register'
+    });
 })
 app.get('/login/:username/:password', logic.login);
-app.post('/registration', logic.register);
+app.post('/register', logic.register);
 
 app.post('/addFavorite', logic.addFavorite);
+app.get('/favorites', function(req,res) {
+    res.render('pages/recipeList.ejs', {
+        title: 'Dig In!',
+        link: 'searchRecipes',
+        galleryTitle: ""
+    });
+})
 app.get('/getFavorites/:chef_id', logic.getFavorites);
 app.delete('/deleteFavorite', logic.deleteFavorite);
 app.get('/allRecipes', logic.getAllRecipes);
 app.get('/searchRecipes/:keyword/:page', api.searchRecipes);
-app.get('/viewRecipe/:f2f_rid', api.viewRecipe);
+app.get('/viewRecipe/:recipe_id', api.viewRecipe);
 
 
 // run on port */

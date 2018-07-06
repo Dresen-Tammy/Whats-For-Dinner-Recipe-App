@@ -39,23 +39,38 @@ access.setPersonInDb = function (username, password, callback) {
     })
 }
 // get recipe from database
-access.getRecipeFromDb = function (f2f_rid, callback) {
+access.getRecipeFromDb = function (recipe_id, callback) {
     console.log('getting recipe');
-    var sql = "SELECT id FROM recipe WHERE f2f_rid = $1::int";
-    var params = [f2f_rid];
+    var sql = "SELECT id FROM recipe WHERE recipe_id = $1::varchar";
+    var params = [recipe_id];
     pool.query(sql, params, function(err, result) {
         if (err) {
             console.log("an error with the database occured in get recipe");
             console.log(err);
             callback(err, null);
         }
-        console.log("Found DB result:" + JSON.stringify(result.rows));
+        console.log(result);
+        callback(null, result.rows);
+    })
+}
+// get recipeId from database
+access.getRecipeIdFromDb = function (id, callback) {
+    console.log('getting recipe');
+    var sql = "SELECT recipe_id FROM recipe WHERE id = $1::int";
+    var params = [id];
+    pool.query(sql, params, function(err, result) {
+        if (err) {
+            console.log("an error with the database occured in get recipeId");
+            console.log(err);
+            callback(err, null);
+        }
+        console.log(result.rows);
         callback(null, result.rows);
     })
 }
 // get all recipes from database
 access.getAllRecipesFromDb = function(callback) {
-    var sql = "SELECT id, f2f_rid, recipe_name, imageurl FROM recipe";
+    var sql = "SELECT id, recipe_id, title, image_url FROM recipe";
     pool.query(sql, function(err, result) {
         if (err) {
             console.log("an error with database occurred");
@@ -68,7 +83,7 @@ access.getAllRecipesFromDb = function(callback) {
 }
 // get favorites from db
 access.getFavoritesFromDb = function (chef_id, callback) {
-    var sql = "SELECT r.id, r.f2f_rid, r.recipe_name, r.imageurl FROM recipe r INNER JOIN favorite f ON r.id = f.recipe_id WHERE f.chef_id = $1::int";
+    var sql = "SELECT r.id, r.recipe_id, r.title, r.image_url FROM recipe r INNER JOIN favorite f ON r.id = f.rid WHERE f.chef_id = $1::int";
     var params = [chef_id];
     pool.query(sql, params, function(err, result) {
         if (err) {
@@ -76,16 +91,16 @@ access.getFavoritesFromDb = function (chef_id, callback) {
             console.log(err);
             callback(err, null);
         } 
-        console.log("Found DB result: " + JSON.stringify(result.rows));
+        console.log(result.rows);
         callback(null, result);
 
     })
 }
 // add favorite to db
-access.setFavoriteInDb = function (recipe_id, chef_id, callback) {
-    console.log("recipe_id inside setFav", recipe_id);
-    var sql = "INSERT INTO favorite VALUES (default, $1::int, $2::int) RETURNING id";
-    var params = [chef_id, recipe_id];
+access.setFavoriteInDb = function (rid, chef_id, callback) {
+    
+    var sql = "INSERT INTO favorite VALUES (default, $1::int, $2::int) RETURNING rid";
+    var params = [chef_id, rid];
     pool.query(sql, params, function(err, result) {
         if (err) {
             console.log("An error with the database occurred in setFavorite");
@@ -93,14 +108,14 @@ access.setFavoriteInDb = function (recipe_id, chef_id, callback) {
             callback(err, null);
         } else {
         console.log("Db results: " + JSON.stringify(result.rows));
-        callback(null, result);
+        callback(null, result.rows);
         }
     })
 }
 // delete favorite from database
 access.deleteFavoriteFromDb = function(chef_id, recipe_id, callback) {
     console.log('deleting from favorite');
-    var sql = "DELETE FROM favorite WHERE chef_id = $1::int AND recipe_id = $2::int";
+    var sql = "DELETE FROM favorite WHERE chef_id = $1::int AND rid = (SELECT id FROM recipe WHERE recipe_id = $2::varchar) RETURNING chef_id";
     var params = [chef_id, recipe_id];
     pool.query(sql, params, function(err, result) {
         if (err) {
@@ -114,10 +129,10 @@ access.deleteFavoriteFromDb = function(chef_id, recipe_id, callback) {
     })
 }
 // add recipe to db
-access.setRecipeInDb = function(f2f_rid, recipe_name, imageurl, source, ingredients, callback) {
+access.setRecipeInDb = function(recipe_id, title, image_url, callback) {
     console.log('adding recipe');
-    var sql = "INSERT INTO recipe VALUES (default, $1::int, $2::varchar, $3::text, $4::text, $5::text[]) RETURNING id";
-    var params = [f2f_rid, recipe_name, imageurl, source, ingredients];
+    var sql = "INSERT INTO recipe VALUES (default, $1::varchar, $2::varchar, $3::text) RETURNING id";
+    var params = [recipe_id, title, image_url];
     pool.query(sql, params, function(err, result) {
         if (err) {
             console.log("An error with the database occured in set recipe");

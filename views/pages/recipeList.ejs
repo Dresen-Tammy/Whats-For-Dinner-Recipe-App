@@ -1,0 +1,19 @@
+    <% include ../partials/header %>
+    <body>
+    <h1><%= title %></h1>
+    <button class="favoriteButton" onclick="getFavorites()">Favorites</button>
+    <div class="searchForm">
+        
+        <h2>Get New Recipes</h2>
+        <input class="search" name="keyword" id='keyword' type="text" placeholder="ingredient">
+        <button class="searchButton" id="search" onclick="searchRecipes()">Search</button>
+    </div>
+    
+    <div class="gallery">
+            <h2 class="galleryTitle"></h2>
+    <ul class="recipeList">
+
+         
+    </ul>
+</div>
+    <% include ../partials/footer %>

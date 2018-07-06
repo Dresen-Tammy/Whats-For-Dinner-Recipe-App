@@ -21,3 +21,14 @@ CREATE TABLE favorite
 ,recipe_id   INTEGER      REFERENCES recipe(id)
 ,UNIQUE (chef_id, recipe_id)
 );
+
+
+recipes=# alter table recipe rename recipe_name to title;
+ALTER TABLE
+recipes=# alter table recipe rename imageurl to image_url;
+ALTER TABLE
+recipes=# alter table recipe rename source to source_url;
+ALTER TABLE
+recipes=# alter table recipe rename recipe_id to f2f_rid;
+ERROR:  column "recipe_id" does not exist
+recipes=# alter table recipe rename f2f_rid to recipe_id 
