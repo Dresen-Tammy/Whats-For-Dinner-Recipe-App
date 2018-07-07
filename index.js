@@ -50,7 +50,7 @@ app.delete('/deleteFavorite', logic.deleteFavorite);
 app.get('/allRecipes', logic.getAllRecipes);
 app.get('/searchRecipes/:keyword/:page', api.searchRecipes);
 app.get('/viewRecipe/:recipe_id', api.viewRecipe);
-
+app.get('/logout', logic.logout);
 
 // run on port */
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`));

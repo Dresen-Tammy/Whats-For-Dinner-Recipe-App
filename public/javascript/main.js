@@ -2,7 +2,11 @@
 function loginUser() {
     // get variables
     var username = document.querySelector('#username').value,
-        password = document.querySelector('#password').value,
+        password = document.querySelector('#password').value;
+        if (!username || !password) {
+            document.querySelector('.error').innerText = "Please fill in all fields."
+            return;
+        }
         form = document.querySelector('#userInput'),
         output = document.querySelector('#output'),
         outputUl = document.querySelector('#outputUl');
@@ -18,7 +22,7 @@ function loginUser() {
             
             
         }).fail(function(xhr, status, error) {
-            output.append(JSON.stringify(error));
+            document.querySelector('.error').innerText = "Error" ;
         })
     }
     // register user
@@ -37,7 +41,13 @@ function registerUser() {
     }) 
 }
 
-
+function logout() {
+    $.get('/logout', (result)=>{
+        window.location.href('/login');
+    }).fail(function(xhr, status, error) {
+        console.log(status,error, xhr.status, xhr.status.text)
+    })
+}
     // get list of recipes from Food2Fork API
 function searchRecipes() {
     const keyword = document.querySelector('#keyword').value;

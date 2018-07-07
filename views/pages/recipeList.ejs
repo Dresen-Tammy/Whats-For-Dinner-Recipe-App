@@ -1,14 +1,19 @@
     <% include ../partials/header %>
     <body>
     <h1><%= title %></h1>
-    <button class="favoriteButton" onclick="getFavorites()">Favorites</button>
+    <button class="logout" onclick="logout()">Logout</button>
+    <div class="topArea">
     <div class="searchForm">
         
         <h2>Get New Recipes</h2>
         <input class="search" name="keyword" id='keyword' type="text" placeholder="ingredient">
         <button class="searchButton" id="search" onclick="searchRecipes()">Search</button>
     </div>
-    
+    <div class="favoriteField">
+        <h2>View your Favorites</h2>
+    <button class="favoriteButton" onclick="getFavorites()">Favorites</button>
+</div>
+</div>
     <div class="gallery">
             <h2 class="galleryTitle"></h2>
     <ul class="hero"></ul>

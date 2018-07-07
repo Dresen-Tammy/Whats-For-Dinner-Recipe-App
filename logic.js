@@ -14,7 +14,7 @@ logic.login = function (req, res) {
         if (err) {
             res.status(500).json({success:false, message: "Error logging in."});
         } else if (result == null || result.length != 1) {
-            res.status(500).json({success:false, message: "Username or password is incorrect."});
+            res.status(400).json({success:false, message: "Username or password is incorrect."});
         } else {
             if (result[0].password == password) {
                 console.log(result[0]);
@@ -23,7 +23,7 @@ logic.login = function (req, res) {
                             // send id from session or cookie 
                  
             } else {
-                res.status(500).json({success:false, message: "Username or password is incorrect."})
+                res.status(400).json({success:false, message: "Username or password is incorrect."})
             }
             
         }
@@ -41,7 +41,7 @@ logic.register = function(req,res) {
         if (err) {
             res.status(500).json({success:false, message: "error registering."});
         } else if (result === undefined) {
-            res.status(500).json({success:false, message: "Username already registered."});
+            res.status(400).json({success:false, message: "Username already registered."});
         } else {
             access.setPersonInDb(username, password, function(err, result) {
                 if (err) {
@@ -59,6 +59,10 @@ logic.register = function(req,res) {
         }
     })
 
+}
+logic.logout = function(req,res) {
+    // TODO sign out of session
+    res.json({success:true, message: "logged out"});
 }
 logic.getFavorites = function(req,res) {
     console.log('getting favorites');

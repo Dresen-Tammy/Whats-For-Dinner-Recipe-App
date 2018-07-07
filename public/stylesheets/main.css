@@ -51,10 +51,7 @@ h2 {
     padding: 15px;
     background-color: white;
 }
-.searchForm {
-    width: 400px;
-    margin: 0 auto;
-}
+
 .favorite {
     color: white;
     background-color: rgba(0,0,0,0.2);
@@ -85,9 +82,7 @@ h2 {
     margin-top: -12px;
 }
 .favoriteButton {
-    position: absolute;
-    right: 15px;
-    top: 15px;
+
 }
 .one-recipe {
     width: 100%;
@@ -136,6 +131,36 @@ h2 {
     position: absolute;
     top:0;
     right:0;
+}
+.topArea {
+ width: 100%;
+ display: flex;
+ flex-flow: row wrap;
+}
+.searchForm {
+width: 100%;
+text-align: center;
+margin-top: 10px;
+padding-bottom: 10px;
+border-bottom: solid .5px #a2ac5f;
+}
+.favoriteField {
+width: 100%;
+text-align: center;
+margin-top: 10px;
+padding-bottom: 10px;
+border-bottom: solid .5px #a2ac5f;
+}
+.logout {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+@media(min-width: 700px) {
+    .searchForm, .favoriteField {
+        width: 50%;
+    }
+    
 }
 
 
