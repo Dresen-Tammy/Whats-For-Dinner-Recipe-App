@@ -1,7 +1,7 @@
 const access = require('./access.js');
 const fetch = require('node-fetch');
 const http = require('http');
-const bcrypt = require('bcrypt');
+const bcrypt = require('../index.js').bcrypt
 const session = require('express-session');
 var logic = {};
 
