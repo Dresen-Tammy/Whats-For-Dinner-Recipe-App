@@ -15,11 +15,14 @@ function loginUser() {
         var target = `/login/${username}/${password}`;
         // perform AJAX request using get()
         $.get(target, function(response) {
-            console.log(response);
+
             // set cookie??
             // start session??
-            window.location.href = '/favorites';
-            
+            if (response.chef_id !== undefined) {
+                window.location.href = '/';
+            } else {
+                document.querySelector('.error').innerText = "Username or password is incorrect."
+            }
             
         }).fail(function(xhr, status, error) {
             document.querySelector('.error').innerText = "Error" ;
@@ -29,21 +32,26 @@ function loginUser() {
 function registerUser() {
     const username = document.querySelector("#username").value;
     const password = document.querySelector("#password").value;
-    console.log('password');
-    $.post('/register', //url
+    if (username == "" || password == "") {
+        document.querySelector('.error').innerText = "Please fill in all fields";
+        
+    } else {
+        $.post('/register', //url
     { username: username, // data
       password: password
-    }).done(function(result,status){
+    }).done(function(result, status){
         document.querySelector('.error').innerText = `Thanks for registering, ${result.username}. Please Login.`
         
     }).fail(function(xhr, status, error) {
         console.log(status, error, xhr.status, xhr.status.text)
     }) 
+    }
+    
 }
 
 function logout() {
-    $.get('/logout', (result)=>{
-        window.location.href('/login');
+    $.get('/logout', (result)=> {
+        window.location.href = '/';
     }).fail(function(xhr, status, error) {
         console.log(status,error, xhr.status, xhr.status.text)
     })
@@ -51,7 +59,7 @@ function logout() {
     // get list of recipes from Food2Fork API
 function searchRecipes() {
     const keyword = document.querySelector('#keyword').value;
-    const target = `/searchRecipes/${keyword}/1`
+    const target = `api/searchRecipes/${keyword}/1`
     $.get(target, function(res){
         var list = res.recipes;
         document.querySelector('.galleryTitle').innerText = "Search Results";
@@ -68,7 +76,7 @@ function searchRecipes() {
 // TODO: get one recipe by recipe_id and display recipe with link to instructions.
 function viewRecipe(e) {
 const recipe_id = e.currentTarget.attributes[1].value;
-const target = '/viewRecipe/' + recipe_id;
+const target = 'api/viewRecipe/' + recipe_id;
 $.get(target, (res)=>{
     // success render recipe 
     displayRecipe(res.recipe);
@@ -124,13 +132,14 @@ function displayRecipe(recipe) {
     faveButton.appendChild(span);
     
     cls2.value = 'favorite herofave';
-    faveButton.setAttributeNode(cls2);
+    
     var image_url = document.createAttribute("data_image");
     image_url.value = recipe['image_url'];// HERE
     var title = document.createAttribute("data_title");
     title.value = recipe['title'];
     faveButton.setAttributeNode(image_url);
     faveButton.setAttributeNode(title);
+    faveButton.setAttributeNode(cls2);
     li.appendChild(faveButton);
     cardClass.value = 'info';
     card.setAttributeNode(cardClass);
@@ -174,83 +183,11 @@ function displayRecipe(recipe) {
     hero.appendChild(li);
 }
 
-       
-        //faveButton.appendChild(title);
-        
-        
-       
-/* function displayRecipe(recipe) {
-    // create recipe tile elements
-    const li = document.createElement('li'),
-          liClass = document.createAttribute('class'),
-          p1 = document.createAttribute('p'),
-          img = document.createElement('img'),
-          imgClass = document.createAttribute('class'),
-          imgSrc = document.createAttribute('src'),
-          imgAlt = document.createAttribute('alt'),
-          p2 = document.createElement('p'),
-          ul = document.createElement('ul'),
-          ulClass = document.createAttribute('class'),
-          ingredients = recipe.ingredients,
-          a = document.createElement('a'),
-          aHref = document.createAttribute('href'),
-          aTarget = document.createAttribute('target'),
-          aText = document.createTextNode('Directions'),
-          p3 = document.createElement('p')
-          
-    let ingred;
-    // create tile
-    liClass.value = 'one-recipe';
-    li.setAttributeNode(liClass);
-    p1.innerText = recipe.title;
-    li.appendChild(p1.documentElement);
-    // create image
-    imgClass.value = 'one-image';
-    img.setAttributeNode(imgClass);
-    imgSrc.value = recipe.image_url;
-    img.setAttributeNode(imgSrc);
-    imgAlt.value = recipe.title;
-    img.setAttributeNode(imgAlt);
-    li.appendChild(img);
-    // create h3
-    p2.innerText = "Ingredients";
-    li.appendChild(p2);
-    ulClass.value = 'one-list';
-    ul.setAttributeNode(ulClass);
-    for (let i=0; i<ingredients.length; i++) {
-        ingred = document.createElement('li');
-        let text = document.createTextNode(ingredients[i]);
-        ingred.appendChild(text);
-        ul.appendChild(ingred);
-    }
-    li.appendChild(ul);
-    aHref.value = recipe.source_url;
-    a.setAttributeNode(aHref);
-    aTarget.value = '_blank';
-    a.setAttributeNode(aTarget);
-    a.appendChild(aText);
-    li.appendChild(a);
-    p3.innerText = "Recipe by " + recipe.publisher; 
-    p3.appendChild(pText);
-    li.appendChild(p);
-    
-    
-    
-
-    
-    
-    imgAlt.vaule = recipe.title;
-    img.setAttributeNode(imgAlt);
-    const hero = document.querySelector('.hero');
-    
-    hero.appendChild(li);
-} */
 
 // get favorites from database() {
 function getFavorites() {
-    const chef_id = 1; // TODO get chef_id from session
-    const target = `/getFavorites/${chef_id}`;
-    $.get(target, function(res){
+    
+    $.get('recipes/getFavorites', function(res){
         
         document.querySelector('.galleryTitle').innerText = "Favorite Recipes";
         renderFavorites(res);
@@ -266,20 +203,25 @@ function getFavorites() {
 function addFave(e) {
     console.log(e.currentTarget.id);
     const recipe_id = e.currentTarget.id;
-    const chef_id = 1; // TODO get session variable
     const title = e.currentTarget.attributes[2].value;
     const image_url = e.currentTarget.attributes[1].value;
-    $.post('/addFavorite', //url
+    if (recipe_id == null || recipe_id == "" ||title == null || title == "" ||image_url == null || image_url == "") {
+        console.log(err);
+        return;
+    }
+    $.post('recipes/addFavorite', //url
         { recipe_id: recipe_id, // data
           image_url: image_url,
           title: title,
-          chef_id: chef_id
         }).done(function(result,status){
             
             const heart = document.getElementById(result.recipe_id);
             if (!heart.classList.contains('favorited')) {
                 heart.classList.add('favorited')
+                heart.removeEventListener('click', addFave);
+                heart.addEventListener('click', removeFaveSearch);
             }
+            
         }).fail(function(xhr, status, error) {
             console.log(status, error, xhr.status, xhr.status.text)
         }) 
@@ -289,23 +231,44 @@ function addFave(e) {
 // delete recipe from favorite in database and rerender favorite display.
 function removeFave(e) {
     const recipe_id = e.currentTarget.id;
-    const chef_id = 1; // TODO change to session variable
-    $.ajax({
-        type: 'DELETE',
-        url: '/deleteFavorite',
-        data: {
-            recipe_id: recipe_id,
-            chef_id: chef_id
-        }
-    }).done(function(result){
-        console.log("deleted");
-        renderFavorites(result);
-    }).fail(function(xhr, status, error){
-        console.log(status, error, xhr.status, xhr.status.text);
-    })
-
+    if (recipe_id) {
+        $.ajax({
+            type: 'DELETE',
+            url: 'recipes/deleteFavorite',
+            data: {
+                recipe_id: recipe_id,
+            }
+        }).done(function(result){
+            console.log("deleted");
+            renderFavorites(result);
+        }).fail(function(xhr, status, error){
+            console.log(status, error, xhr.status, xhr.status.text);
+        })
+    }
 }
-
+// delete recipe from favorite in database when search result is showing.
+function removeFaveSearch(e) {
+    const recipe_id = e.currentTarget.id;
+    if (recipe_id) {
+        $.ajax({
+            type: 'DELETE',
+            url: 'recipes/deleteFavoriteSearch',
+            data: {
+                recipe_id: recipe_id,
+            }
+        }).done(function(result){
+            console.log("deleted");
+            const heart = document.getElementById(result.recipe_id);
+            if (heart.classList.contains('favorited')) {
+                heart.classList.remove('favorited');
+                heart.removeEventListener('click', removeFaveSearch);
+                heart.addEventListener('click', addFave);
+            }
+        }).fail(function(xhr, status, error){
+            console.log(status, error, xhr.status, xhr.status.text);
+        })
+    }
+}
 // deliver list items one at a time from F2F list to renderRecipes then display on page
 function renderList(list) {
     var recipes = list.map(recipe => {

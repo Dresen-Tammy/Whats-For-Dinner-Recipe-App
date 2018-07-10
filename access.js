@@ -49,7 +49,7 @@ access.getRecipeFromDb = function (recipe_id, callback) {
             console.log(err);
             callback(err, null);
         }
-        console.log(result);
+
         callback(null, result.rows);
     })
 }
@@ -64,7 +64,7 @@ access.getRecipeIdFromDb = function (id, callback) {
             console.log(err);
             callback(err, null);
         }
-        console.log(result.rows);
+
         callback(null, result.rows);
     })
 }
@@ -91,24 +91,42 @@ access.getFavoritesFromDb = function (chef_id, callback) {
             console.log(err);
             callback(err, null);
         } 
-        console.log(result.rows);
+        
         callback(null, result);
 
     })
 }
+access.getFavoriteByTitle = function (chef_id, recipe_id, callback) {
+    var sql = "SELECT id FROM favorite WHERE chef_id = $1::int AND rid = (SELECT id FROM recipe WHERE recipe_id = $2::varchar)";
+    var params = [chef_id, recipe_id];
+    console.log(chef_id);
+    console.log(recipe_id);
+    pool.query(sql, params, function(err, result) {
+        if (err) {
+            console.log("An error occured in getFavoritesByTitle");
+            
+            callback(err, null);
+        } else {
+            console.log('Success in getFavoritesByTitle');
+        
+        callback(null, result.rows);
+        }
+        
+    })
+}
 // add favorite to db
-access.setFavoriteInDb = function (rid, chef_id, callback) {
+access.setFavoriteInDb = function (recipe_id, chef_id, callback) {
     
-    var sql = "INSERT INTO favorite VALUES (default, $1::int, $2::int) RETURNING rid";
-    var params = [chef_id, rid];
+    var sql = "INSERT INTO favorite VALUES (default, $1::int, (SELECT id FROM recipe WHERE recipe_id = $2::varchar))";
+    var params = [chef_id, recipe_id];
     pool.query(sql, params, function(err, result) {
         if (err) {
             console.log("An error with the database occurred in setFavorite");
             console.log(err);
             callback(err, null);
         } else {
-        console.log("Db results: " + JSON.stringify(result.rows));
-        callback(null, result.rows);
+        console.log("Success in setFavorite");
+        callback(null, result);
         }
     })
 }
