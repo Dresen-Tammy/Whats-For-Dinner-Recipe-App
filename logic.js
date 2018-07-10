@@ -1,7 +1,11 @@
 const access = require('./access.js');
 const fetch = require('node-fetch');
 const http = require('http');
-const bcrypt = require('./index.js').bcrypt
+//const bcrypt = require('bcrypt');
+var crypto = require('crypto'),
+    algorithm = 'aes-256-ctr',
+    password = '5th7LreP';
+
 const session = require('express-session');
 var logic = {};
 
@@ -11,27 +15,24 @@ var logic = {};
 logic.login = function (req, response, next) {
     console.log('logging in')
     var username = req.params.username;
-    var password = req.params.password;
+    var pword = req.params.password;
     access.getPersonFromDb(username, function(err, result) {
         if (err) {
             response.status(500).json({success:false, message: "Error logging in."});
         } else if (result == null || result.length != 1) {
             response.status(200).json({success:false, message: "Username or password is incorrect."});
         } else {
-            console.log(password);
+            console.log(pword);
             console.log(result[0].password);
-            bcrypt.compare(password, result[0].password, function(err,res) {
-                if (err) {
-                    response.status(500).json({success:false, message: "Error logging in."}); 
-                }
-                console.log(res);
-                if (res == true) {
+            var decipher = crypto.createDecipher(algorithm, password)
+            var dec = decipher.update(result[0].password, 'hex', 'utf8')
+            dec += decipher.final('utf8');
+            if (req.params.password === dec) {
                     req.session.chef_id = result[0].id;
                     response.json({chef_id: result[0].id})
                 } else {
                     response.status(200).json({success:false, message: "Username or password is incorrect."})
-                }
-            })   
+                }  
         }
     }) 
 }
@@ -39,8 +40,8 @@ logic.login = function (req, response, next) {
 logic.register = function(req,res) {
     console.log('registering');
     var username = req.body.username;
-    var password = req.body.password;
-    if (username === null || password === null || username === "" || password === "") {
+    var pword = req.bod;
+    if (username === null || pword === null || username === "" || pword === "") {
         res.status(500).json({success:false, message: "Fill in all fields."});
     }
     access.getPersonFromDb(username, function(err, result) {
@@ -49,9 +50,10 @@ logic.register = function(req,res) {
         } else if (result === undefined) {
             res.status(400).json({success:false, message: "Username already registered."});
         } else {
-                bcrypt.hash(password, 10, function(err, hash){
-                    if (err) {throw (err);}
-                    access.setPersonInDb(username, hash, function(err, result) {
+                var cipher = crypto.createCipher(algorithm, password);
+                var crypted = cipher.update(req.body.password, 'utf8', 'hex')
+                crypted += cipher.final('hex');
+                access.setPersonInDb(username, crypted, function(err, result) {
                         if (err) {
                             res.status(500).json({success:false, message: "Error registering."}); 
                         } else {
@@ -64,7 +66,7 @@ logic.register = function(req,res) {
                             })
                         }
                     })
-                })
+                
             
         }
     })

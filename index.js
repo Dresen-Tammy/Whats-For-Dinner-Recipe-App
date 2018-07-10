@@ -12,7 +12,6 @@ const logic = require('./logic.js');
 const apiRouter = require('./routes/api.js');
 // custom module that has routes behind logged in
 const recipesRouter = require('./routes/recipes.js');
-const bcrypt = require('bcrypt');
 // new express instance
 const app = express();
 

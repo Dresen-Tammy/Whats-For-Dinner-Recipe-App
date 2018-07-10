@@ -1,7 +1,6 @@
 const express = require('express');
 const fetch = require('node-fetch');
 const http = require('http');
-const bcrypt = require('bcrypt');
 const session = require('express-session');
 // custom module that has all the logic of server
 const logic = require('../logic.js');
