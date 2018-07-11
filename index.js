@@ -1,3 +1,4 @@
+require('dotenv').config;
 /* ********* Require Modules ************/
 const express = require('express');
 // for getting params from path
@@ -12,8 +13,20 @@ const logic = require('./logic.js');
 const apiRouter = require('./routes/api.js');
 // custom module that has routes behind logged in
 const recipesRouter = require('./routes/recipes.js');
+
 // new express instance
 const app = express();
+var sess = {
+    secret: process.env.SECRET,
+    cookie: {}
+  }
+   
+  if (app.get('env') === 'production') {
+    app.set('trust proxy', 1) // trust first proxy
+    sess.cookie.secure = true // serve secure cookies
+  }
+   
+  app.use(session(sess))
 
 
 // set up port
@@ -33,8 +46,9 @@ app.use(bodyParser.json()); // supports json encoded bodies
 app.use(session({secret: 'specialized', resave: true, saveUninitialized: true}));
 
 // main route. Checks for logged in. If logged in, delivers to recipe page, if not delivers to login page, 
-app.get('/', function(req,res) {
+app.get('/', (req,res) =>{
     if (req.session.chef_id) {
+        console.log(req.session);
         res.render('pages/recipeList.ejs', {
             title: "What's For Dinner?",
             link: 'searchRecipes',
@@ -47,7 +61,7 @@ app.get('/', function(req,res) {
         });
     }
 })
-app.get('/logout', function(req,res) {
+app.get('/logout', (req,res)=> {
     if (req.session.chef_id) {
         logic.logout(req, res); 
     } else {
@@ -61,7 +75,7 @@ app.get('/logout', function(req,res) {
 // gets password and username, checks if in db, if not, registers user.
 app.post('/register', logic.register); //logic.register
 // gets password and username, checks against db, logs in, and saves session variable.
-app.get('/login/:username/:password', logic.login);
+app.post('/login', logic.login);
 
 
 

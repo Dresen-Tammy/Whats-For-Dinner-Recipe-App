@@ -20,7 +20,7 @@ router.use(function checkLoggedIn(req,res,next) {
             link: 'login'
         });
     }
-})
+});
 // checks if logged in. If so get favorites, if not, delivers login page.
 router.get('/getFavorites', function(req,res) {
     console.log('getting favorites');
@@ -36,8 +36,8 @@ router.get('/getFavorites', function(req,res) {
 
             res.json(result.rows);
         }
-    })
-})
+    });
+});
 
 // Adds favorite to db
 router.post('/addFavorite', function(req, res, next) {
@@ -56,8 +56,8 @@ router.post('/addFavorite', function(req, res, next) {
         } else {
             next();
         } 
-    })
-})
+    });
+});
 router.post('/addFavorite', function(req, res, next) {
     // check if in recipes.  If yes, next, if no, add to recipes
     console.log("next check in recipes");
@@ -76,10 +76,10 @@ router.post('/addFavorite', function(req, res, next) {
                 } else {
                     next();
                 }
-            })
+            });
         }
-    })
-})
+    });
+});
 router.post('/addFavorite', function(req, res, next) {
     console.log("Add to favorites");
     // add to favorite

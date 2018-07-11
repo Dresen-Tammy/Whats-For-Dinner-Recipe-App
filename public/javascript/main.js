@@ -7,18 +7,15 @@ function loginUser() {
             document.querySelector('.error').innerText = "Please fill in all fields."
             return;
         }
-        form = document.querySelector('#userInput'),
-        output = document.querySelector('#output'),
-        outputUl = document.querySelector('#outputUl');
-    
         // resolve target uri
-        var target = `/login/${username}/${password}`;
+ 
         // perform AJAX request using get()
-        $.get(target, function(response) {
-
-            // set cookie??
-            // start session??
-            if (response.chef_id !== undefined) {
+        $.post('/login', 
+            {
+                username: username,
+                password: password
+            }).done(function(result, status) {
+            if (result.chef_id !== undefined) {
                 window.location.href = '/';
             } else {
                 document.querySelector('.error').innerText = "Username or password is incorrect."

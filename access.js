@@ -9,12 +9,11 @@ var access = {};
 // get one chef from the database
 access.getPersonFromDb = function (username, callback) {
         console.log('Back from the getPersonFromDb function with username: ', username);
-        var sql = "SELECT id, username, password FROM chef WHERE username = $1::varchar";
+        var sql = "SELECT id, username, password, salt FROM chef WHERE username = $1::varchar";
         var params = [username];
         pool.query(sql, params, function(err, result){
             if (err) {
                 console.log("An error with the database occured");
-                console.log(err);
                 callback(err, null);
             }
             console.log("Found DB result: " + JSON.stringify(result.rows));
@@ -23,10 +22,10 @@ access.getPersonFromDb = function (username, callback) {
     }
 
 // insert chef into database
-access.setPersonInDb = function (username, password, callback) {
+access.setPersonInDb = function (username, password, salt, callback) {
     console.log('setting person');
-    var sql = "INSERT INTO chef VALUES (default, $1::varchar, $2::varchar)";
-    var params = [username, password];
+    var sql = "INSERT INTO chef VALUES (default, $1::varchar, $2::varchar, $3::varchar)";
+    var params = [username, password, salt];
     pool.query(sql, params, function(err, result){
         if (err) {
             console.log("An error with the database occured");

@@ -24,3 +24,15 @@ INSERT INTO favorite VALUES (default, 1, 3);
 INSERT INTO favorite VALUES (default, 1, 1);
 INSERT INTO favorite VALUES (default, 1, 2);
 INSERT INTO favorite VALUES (default, 2, 1);
+
+CREATE TABLE "session" (
+  "sid" varchar NOT NULL COLLATE "default",
+	"sess" json NOT NULL,
+	"expire" timestamp(6) NOT NULL
+)
+WITH (OIDS=FALSE);
+ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
+
+grant select, insert, delete on session to recipeUser;
+
+grant usage, select on all sequences in schema public to recipeUser;
