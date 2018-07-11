@@ -28,7 +28,7 @@ logic.login = function (req, response, next) {
             
             console.log("password from db", result[0].password);
             let password = result[0].password;
-            let hash = getHash(result[0].salt, req.body.username);
+            let hash = getHash(result[0].salt, req.body.password);
             console.log("Hashed password", hash);
             console.log(hash);
            // var decipher = crypto.createDecipher(algorithm, password)
