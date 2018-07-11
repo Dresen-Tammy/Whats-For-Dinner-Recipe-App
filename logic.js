@@ -22,12 +22,14 @@ logic.login = function (req, response, next) {
         if (err) {
             response.status(500).json({success:false, message: "Error logging in."});
         } else if (result == null || result.length != 1) {
-            response.json({success:false, message: "Username or password is incorrect."});
+            response.json({success:false, message: "Username or password is incorrect1."});
         } else {
-            console.log(pword);
-            console.log(result[0].salt);
+            console.log("Input Password", req.body.password);
+            
+            console.log("password from db", result[0].password);
             let password = result[0].password;
             let hash = getHash(result[0].salt, req.body.username);
+            console.log("Hashed password", hash);
             console.log(hash);
            // var decipher = crypto.createDecipher(algorithm, password)
            // var dec = decipher.update(result[0].password, 'hex', 'utf8')
@@ -37,7 +39,7 @@ logic.login = function (req, response, next) {
                     req.session.chef_id = result[0].id;
                     response.json({chef_id: result[0].id})
                 } else {
-                    response.status(200).json({success:false, message: "Username or password is incorrect."})
+                    response.status(200).json({success:false, message: "Username or password is incorrect2."})
                 }  
         }
     }) 
