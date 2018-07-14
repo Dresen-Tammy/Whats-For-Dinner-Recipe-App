@@ -5,9 +5,40 @@
 }
 html {
     background-color: white;
+    position: relative;
+    min-height: 100%;
+    padding-bottom: 50px;
 }
 #userInput {
-    margin: 15px;
+    margin: 15px auto;
+    padding: 20px;
+    width: 255px;
+    background-color: rgba(191, 198, 145, 0.3);
+    border-radius: 10px;
+}
+input {
+    font-size: 14px;
+}
+.login, .register, .favoriteButton, .searchButton {
+    padding: 1px 8px;
+
+    background-color: #a2ac5f;
+    border-radius: 5px;
+    font-size: 16px;
+}
+.reg {
+    font-size: 10px;
+    color: gray;
+    float: right;
+}
+label {
+    width: 80px;
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 18px;
+}
+.register {
+    float: right;
 }
 .error {
     margin: 15px;
@@ -28,6 +59,7 @@ html {
     padding: 0;
     position:relative;
     margin:5px 5px;
+    border-radius: 10px;
 
 }
 .recipeTile img {
@@ -39,6 +71,19 @@ h1 {
     font-size: 20px;
     padding: 15px;
 
+}
+footer {
+    background-color: #a2ac5f;
+    padding: 15px;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+}
+footer a {
+    color: #ffffff;
+}
+footer p {
+    float: right;
 }
 h2 {
     display: inline-block;
@@ -59,6 +104,7 @@ h2 {
     padding: 5px 7px;
     float: right;
     font-size: 1.1em;
+    border-top-right-radius: 10px;
 }
 .favorited {
     color: red;
@@ -91,6 +137,7 @@ h2 {
     padding: 10px;
     border: solid .5px lightgray;
     position: relative;
+    border-radius: 10px;
 }
 .one-image {
     width: 30%;
@@ -101,6 +148,7 @@ h2 {
 .hero {
     list-style: none;
     padding: 0;
+
 }
 .one-recipe h2 {
     display: block;
@@ -123,6 +171,7 @@ h2 {
     display: block;
     text-align: center;
     text-decoration: none;
+    border-radius: 5px;
     
 }
 .herofave {
@@ -149,11 +198,22 @@ margin-top: 10px;
 padding-bottom: 10px;
 border-bottom: solid .5px #a2ac5f;
 }
+.headerImage {
+    height: 30vh;
+    max-height: 200px;
+    width: 100%;
+    background-image: url(../images/cebiche.jpg);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+}
 .logout {
     position: absolute;
     top: 15px;
     right: 15px;
 }
+
 @media(min-width: 700px) {
     .searchForm, .favoriteField {
         width: 50%;

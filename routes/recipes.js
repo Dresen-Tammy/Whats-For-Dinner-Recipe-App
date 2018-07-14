@@ -1,15 +1,11 @@
 const express = require('express');
-const fetch = require('node-fetch');
-const http = require('http');
-const session = require('express-session');
 // custom module that has all the logic of server
-const logic = require('../logic.js');
 const access = require('../access.js');
 var router = express.Router();
 
 
 // checks for session. If no, delivers login page. If yes, continues.
-router.use(function checkLoggedIn(req,res,next) {
+/* router.use(function checkLoggedIn(req,res,next) {
     if (req.session.chef_id) {
         console.log("checking chef_id",req.session.chef_id);
         next()
@@ -20,7 +16,7 @@ router.use(function checkLoggedIn(req,res,next) {
             link: 'login'
         });
     }
-});
+}); */
 // checks if logged in. If so get favorites, if not, delivers login page.
 router.get('/getFavorites', function(req,res) {
     console.log('getting favorites');
@@ -113,7 +109,8 @@ router.delete('/deleteFavorite', function (req, res, next) {
         if (err) {
             res.status(500).json({success: false, message: "Error deleting from favorites"});
         } else {
-            next();
+            res.json({success: true, recipe_id: req.body.recipe_id});
+            //next();
         }
     })
 })

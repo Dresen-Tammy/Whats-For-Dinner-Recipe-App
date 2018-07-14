@@ -45,67 +45,40 @@ app.use(bodyParser.urlencoded({ extended: true})); // supports encoded bodies
 app.use(bodyParser.json()); // supports json encoded bodies
 app.use(session({secret: 'specialized', resave: true, saveUninitialized: true}));
 
-// main route. Checks for logged in. If logged in, delivers to recipe page, if not delivers to login page, 
-app.get('/', (req,res) =>{
-    if (req.session.chef_id) {
-        console.log(req.session);
-        res.render('pages/recipeList.ejs', {
-            title: "What's For Dinner?",
-            link: 'searchRecipes',
-            galleryTitle: ""
-        });
-    } else {
-        res.render('pages/login', {
-            title: 'Login',
-            link: 'login'
-        });
-    }
-})
-app.get('/logout', (req,res)=> {
-    if (req.session.chef_id) {
-        logic.logout(req, res); 
-    } else {
-        res.render('pages/login', {
-            title: 'Login',
-            link: 'login'
-        });
-    }
-})
 /* ***************** Routes for not logged in ****************/
 // gets password and username, checks if in db, if not, registers user.
 app.post('/register', logic.register); //logic.register
 // gets password and username, checks against db, logs in, and saves session variable.
 app.post('/login', logic.login);
 
-
-
-/* *********** routes for logged in only ***********/
-// checks if logged in. If so add favorite to db, if not, delivers login page
-app.use('/recipes', recipesRouter);
-app.use('/api', apiRouter);
-
-
-
-//app.get('/searchRecipes/:keyword/:page', api.searchRecipes);
-//app.get('/viewRecipe/:recipe_id', api.viewRecipe);
-
-
-/* app.get('/favorites', function(req,res) {
+app.use(function checkLoggedIn(req,res,next) {
     if (req.session.chef_id) {
-        console.log("SessionId",req.session.chef_id);
+        console.log("checking chef_id",req.session.chef_id);
+        next()
+    } else {
+        console.log('no work')
+        res.render('pages/login', {
+            title: 'Login',
+            link: 'login'
+        });
+    }
+});
+// main route. If logged in, delivers to recipe page, if not delivers to login page, 
+app.get('/', (req,res) =>{
         res.render('pages/recipeList.ejs', {
             title: "What's For Dinner?",
             link: 'searchRecipes',
             galleryTitle: ""
         });
-    } else {
-        console.log("NoId");
-        res.render('pages/login.ejs', {
-            title: 'Login',
-            link: 'login'
-        });
-    }
-}) */
+   
+})
+
+
+/* *********** routes for logged in only ***********/
+app.get('/logout', logic.logout);
+app.use('/recipes', recipesRouter);
+app.use('/api', apiRouter);
+
 
 // run on port */
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`));

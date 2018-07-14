@@ -34,7 +34,9 @@ router.get('/searchRecipes/:keyword/:page', function(req,res,next) {
          .then((response)=> {
              res.json(response.data);
          }).catch((error)=> {
-             console.log(error);
+             console.log("error getting recipes.");
+             res.status(401)
+                .json({success: false});
          })
 })
 /* GET recipe search */
@@ -49,7 +51,8 @@ router.get('/viewRecipe/:recipe_id', function(req, res, next) {
              res.status(200)
                 .json(response.data);
          }).catch((error)=> {
-             console.log(error);
+            res.status(401)
+            .json({success: false});
          })
 })
 

@@ -1,3 +1,4 @@
+// Devin Cenatiempo helped me with this.
 const crypto = require('crypto'); 
 const validator = require('email-validator'); 
 let util = {};  

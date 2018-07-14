@@ -7,8 +7,6 @@ function loginUser() {
             document.querySelector('.error').innerText = "Please fill in all fields."
             return;
         }
-        // resolve target uri
- 
         // perform AJAX request using get()
         $.post('/login', 
             {
@@ -16,75 +14,91 @@ function loginUser() {
                 password: password
             }).done(function(result, status) {
             if (result.chef_id !== undefined) {
-                window.location.href = '/';
+                window.location.href = '/'; 
             } else {
                 document.querySelector('.error').innerText = "Username or password is incorrect."
             }
-            
         }).fail(function(xhr, status, error) {
-            document.querySelector('.error').innerText = "Error" ;
+            const response = JSON.parse(xhr.responseText);
+            console.log(response);
+            document.querySelector('.error').innerText = response.message ;
         })
     }
-    // register user
+
+
+// register user
 function registerUser() {
+    const message = document.querySelector('.error');
+    message.innerText = ""
     const username = document.querySelector("#username").value;
     const password = document.querySelector("#password").value;
     if (username == "" || password == "") {
-        document.querySelector('.error').innerText = "Please fill in all fields";
-        
+        message.innerText = "Please fill in all fields"; 
     } else {
         $.post('/register', //url
     { username: username, // data
       password: password
     }).done(function(result, status){
-        document.querySelector('.error').innerText = `Thanks for registering, ${result.username}. Please Login.`
+        console.log('registration worked');
+        message.innerText = `Thanks for registering, ${result.username}. Please Login.`
         
     }).fail(function(xhr, status, error) {
-        console.log(status, error, xhr.status, xhr.status.text)
+        const response = JSON.parse(xhr.responseText);
+        console.log(response);
+        message.innerText = response.message;
     }) 
     }
     
 }
 
+// logout
 function logout() {
+    document.querySelector('.error').innertext = "";
     $.get('/logout', (result)=> {
         window.location.href = '/';
     }).fail(function(xhr, status, error) {
-        console.log(status,error, xhr.status, xhr.status.text)
+        const response = JSON.parse(xhr.responseText);
+        console.log(response);
+        document.querySelector('.error').innertext = response.message;
     })
 }
+
     // get list of recipes from Food2Fork API
 function searchRecipes() {
+    const message = document.querySelector('.error');
+    message.innerText = "";
     const keyword = document.querySelector('#keyword').value;
+    if (keyword == "") {
+        document.querySelector('.error').innerText = "Please enter a search keyword."
+        return;
+    }
     const target = `api/searchRecipes/${keyword}/1`
     $.get(target, function(res){
         var list = res.recipes;
-        document.querySelector('.galleryTitle').innerText = "Search Results";
+        message.innerText = "Search Results";
         renderList(list);
     }).fail(function(ERROR){
-        var recipeList = document.querySelector('.recipeList');
-        var li = document.createElement('li');
-        var text = document.createTextNode("There was an error");
-        li.appendChild(text);
-        recipeList.appendChild(li);
+        message.innerText = "There was an error searching for recipes.";
     })
 }
 // get one recipe from Food2Fork API
 // TODO: get one recipe by recipe_id and display recipe with link to instructions.
 function viewRecipe(e) {
-const recipe_id = e.currentTarget.attributes[1].value;
-const target = 'api/viewRecipe/' + recipe_id;
-$.get(target, (res)=>{
-    // success render recipe 
-    displayRecipe(res.recipe);
-}).fail((ERROR)=>{
-    console.log(ERROR);
+    document.querySelector('.error').innerText = "";
+    const recipe_id = e.currentTarget.attributes[1].value;
+    const target = 'api/viewRecipe/' + recipe_id;
+    $.get(target, (res)=>{
+        // success render recipe 
+        displayRecipe(res.recipe);
+    }).fail((ERROR)=>{
+        document.querySelector('.error').innerText = "There was an error displaying the recipe.";
     // error
-})
+    })
 }
 // display 1 recipe
 function displayRecipe(recipe) {
     // create recipe tile elements
+    document.querySelector('.error').innerText = "";
     const li = document.createElement('li'),
           liClass = document.createAttribute('class'),
           card = document.createElement('div'),
@@ -115,21 +129,29 @@ function displayRecipe(recipe) {
           fa = document.createAttribute("class"),
           cls2 = document.createAttribute("class");
     let ingred;
-    // create tile
+    // create class
     liClass.value = 'one-recipe';
     li.setAttributeNode(liClass);
-    // create image
+    // heading
     h2.appendChild(h2Text);
     li.appendChild(h2);
-    id.value = recipe['recipe_id'];
-    faveButton.addEventListener('click', addFave); // assemble button
+    id.value = recipe['recipe_id'] + 'fav';
+    // add button items
+    const recipeTile = document.getElementById(recipe['recipe_id']);
+    if (recipeTile.classList.contains('favorited')) {
+        faveButton.addEventListener('click', deleteFaveHero);
+        cls2.value = 'favorite herofave favorited';
+    } else {
+        faveButton.addEventListener('click', addFaveHero);
+        cls2.value = 'favorite herofave';
+    }
+    // button heart
     fa.value = "fa fa-heart"
     span.setAttributeNode(fa);
     faveButton.setAttributeNode(id);
     faveButton.appendChild(span);
     
-    cls2.value = 'favorite herofave';
-    
+    // add custom attributes for saving to favorites
     var image_url = document.createAttribute("data_image");
     image_url.value = recipe['image_url'];// HERE
     var title = document.createAttribute("data_title");
@@ -169,35 +191,29 @@ function displayRecipe(recipe) {
     div.appendChild(a);
     card.appendChild(div);
     li.appendChild(card);
-    //p.appendChild(pText);
-    //li.appendChild(p);
-    
-    
-    imgAlt.vaule = recipe.title;
+    imgAlt.value = recipe.title;
     img.setAttributeNode(imgAlt);
     const hero = document.querySelector('.hero');
     $(".one-recipe").remove();
     hero.appendChild(li);
+   $('html, body').animate({scrollTop: $("#hero").offset().top}, 'slow');
 }
 
 
 // get favorites from database() {
 function getFavorites() {
-    
+    document.querySelector('.error').innerText = "";
     $.get('recipes/getFavorites', function(res){
         
         document.querySelector('.galleryTitle').innerText = "Favorite Recipes";
         renderFavorites(res);
     }).fail(function(ERROR){
-        var recipeList = document.querySelector('.recipeList');
-        var li = document.createElement('li');
-        var text = document.createTextNode("There was an error");
-        li.appendChild(text);
-        recipeList.appendChild(li);
+        document.querySelector('.error').innerText = "Error getting favorites";
     })
 }
 // add favorite to database and change heart red
 function addFave(e) {
+    document.querySelector('.error').innerText = "";
     console.log(e.currentTarget.id);
     const recipe_id = e.currentTarget.id;
     const title = e.currentTarget.attributes[2].value;
@@ -218,15 +234,58 @@ function addFave(e) {
                 heart.removeEventListener('click', addFave);
                 heart.addEventListener('click', removeFaveSearch);
             }
+            const heartHero = document.getElementById(result.recipe_id + "fav");
+            if (heartHero) {
+                if (!heartHero.classList.contains('favorited')) {
+                    heartHero.classList.add('favorited')
+                    heartHero.removeEventListener('click', addFaveHero);
+                    heartHero.addEventListener('click', deleteFaveHero);
+                }
+            }
+        }).fail(function(xhr, status, error) {
+            document.querySelector('.error').innerText = "Error adding recipe to favorite list."
+        }) 
+}
+function addFaveHero(e) {
+    document.querySelector('.error').innerText = "";
+    console.log(e.currentTarget.id);
+    const hero_recipe_id = e.currentTarget.id;
+    const recipe_id = hero_recipe_id.slice(0, -3);
+    const title = e.currentTarget.attributes[2].value;
+    const image_url = e.currentTarget.attributes[1].value;
+    if (recipe_id == null || recipe_id == "" ||title == null || title == "" ||image_url == null || image_url == "") {
+        console.log(err);
+        return;
+    }
+    $.post('recipes/addFavorite', //url
+        { recipe_id: recipe_id, // data
+          image_url: image_url,
+          title: title,
+        }).done(function(result,status){
+            
+            const heart = document.getElementById(result.recipe_id);
+            const heartHero = document.getElementById(result.recipe_id + "fav");
+            if (heart) {
+                if (!heart.classList.contains('favorited')) {
+                heart.classList.add('favorited')
+                heart.removeEventListener('click', addFave);
+                heart.addEventListener('click', removeFaveSearch);
+                }
+            }
+            if (!heartHero.classList.contains('favorited')) {
+                heartHero.classList.add('favorited')
+                heartHero.removeEventListener('click', addFaveHero);
+                heartHero.addEventListener('click', deleteFaveHero);
+            }
             
         }).fail(function(xhr, status, error) {
-            console.log(status, error, xhr.status, xhr.status.text)
+            document.querySelector('.error').innerText = "Error adding recipe to favorite list."
         }) 
 }
 
-
 // delete recipe from favorite in database and rerender favorite display.
 function removeFave(e) {
+    document.querySelector('.error').innerText = "";
     const recipe_id = e.currentTarget.id;
     if (recipe_id) {
         $.ajax({
@@ -237,14 +296,67 @@ function removeFave(e) {
             }
         }).done(function(result){
             console.log("deleted");
-            renderFavorites(result);
+            const tile = document.getElementsByClassName(result.recipe_id);
+            if (tile[0] !== undefined) {
+            tile[0].parentNode.removeChild(tile[0]);
+            }
+            const heartHero = document.getElementById(result.recipe_id + "fav");
+            if (heartHero) {
+                if (heartHero.classList.contains('favorited')) {
+                    heartHero.classList.remove('favorited')
+                    heartHero.removeEventListener('click', deleteFaveHero);
+                    heartHero.addEventListener('click', addFaveHero);
+                }
+            }
         }).fail(function(xhr, status, error){
-            console.log(status, error, xhr.status, xhr.status.text);
+            document.querySelector('.error').innerText("Error deleting recipe from favorites.")
+        })
+    }
+}
+function deleteFaveHero(e) {
+    document.querySelector('.error').innerText = "";
+    const hero_recipe_id = e.currentTarget.id;
+    const recipe_id = hero_recipe_id.slice(0, -3);
+    if (recipe_id) {
+        $.ajax({
+            type: 'DELETE',
+            url: 'recipes/deleteFavorite',
+            data: {
+                recipe_id: recipe_id,
+            }
+        }).done(function(result){
+            console.log("deleted");
+            // remove recipeTile
+            const tile = document.getElementsByClassName(result.recipe_id);
+            const title = document.getElementById(result.recipe_id);
+            if (tile[0] !== undefined ) {
+                if (title && !title.attributes[2]) {
+                    tile[0].parentNode.removeChild(tile[0]);
+                }
+            }
+            //renderFavorites(result);
+            const heart = document.getElementById(result.recipe_id);
+            if (heart) {
+                if (heart.classList.contains('favorited')) {
+                    heart.classList.remove('favorited');
+                    heart.removeEventListener('click', removeFaveSearch);
+                    heart.addEventListener('click', addFave);
+                }
+            }
+            const heartHero = document.getElementById(result.recipe_id + "fav");
+            if (heartHero.classList.contains('favorited')) {
+                heartHero.classList.remove('favorited')
+                heartHero.removeEventListener('click', deleteFaveHero);
+                heartHero.addEventListener('click', addFaveHero);
+            }
+        }).fail(function(xhr, status, error){
+            document.querySelector('.error').innerText("Error deleting recipe from favorites.");
         })
     }
 }
 // delete recipe from favorite in database when search result is showing.
 function removeFaveSearch(e) {
+    document.querySelector('.error').innerText = "";
     const recipe_id = e.currentTarget.id;
     if (recipe_id) {
         $.ajax({
@@ -256,13 +368,21 @@ function removeFaveSearch(e) {
         }).done(function(result){
             console.log("deleted");
             const heart = document.getElementById(result.recipe_id);
-            if (heart.classList.contains('favorited')) {
-                heart.classList.remove('favorited');
-                heart.removeEventListener('click', removeFaveSearch);
-                heart.addEventListener('click', addFave);
+            if (heart) {
+                if (heart.classList.contains('favorited')) {
+                    heart.classList.remove('favorited');
+                    heart.removeEventListener('click', removeFaveSearch);
+                    heart.addEventListener('click', addFave);
+                }
+            }
+            const heartHero = document.getElementById(result.recipe_id + "fav");
+            if (heartHero) {
+                heartHero.classList.remove('favorited')
+                heartHero.removeEventListener('click', deleteFaveHero);
+                heartHero.addEventListener('click', addFaveHero);
             }
         }).fail(function(xhr, status, error){
-            console.log(status, error, xhr.status, xhr.status.text);
+            document.querySelector('.error').innerText("Error deleting recipe from favorites.");
         })
     }
 }
@@ -296,103 +416,75 @@ function renderFavorites(list) {
 }
 // turn each list item from F2F into recipe tile
 function renderRecipes(recipe) {
-        
-        // create recipe tile
-        var li = document.createElement("li"); 
-        // create and add class to tile
-        var cls = document.createAttribute("class"); 
-        cls.value = 'recipeTile ' + recipe['recipe_id'];
-        li.setAttributeNode(cls);
-        // add background image to tile
-        li.style.backgroundImage = "url(" + recipe['image_url'] + ")";
-        li.style.backgroundSize = "cover";
-        li.style.backgroundPosition = "center center";
-        // create favorite button and id, data_image, and data_title attributes for it
-        var faveButton = document.createElement("button"); // favorite button
-        var title = document.createTextNode("Add to Favorites"); // favorite text
-        var id = document.createAttribute("id");
-        id.value = recipe['recipe_id'];
+        const li = createRecipeTile(recipe);
+        const faveButton = createFaveButton(recipe);
         var image_url = document.createAttribute("data_image");
-        image_url.value = recipe['image_url'];
+            image_url.value = recipe['image_url'];
+            faveButton.setAttributeNode(image_url);
         var title = document.createAttribute("data_title");
-        
-        title.value = recipe['title'];
-        // add event listener to favorite button
-        faveButton.addEventListener('click', addFave); // assemble button
-        // create font awesome label for favorite button
-        var span = document.createElement('span');
-        var fa = document.createAttribute("class");
-        fa.value = "fa fa-heart"
-        // add attributes and label to favorite button
-        span.setAttributeNode(fa);
-        faveButton.setAttributeNode(id);
-        faveButton.setAttributeNode(image_url);
-        faveButton.setAttributeNode(title);
-        faveButton.appendChild(span);
-        // add class to favorite button
+            title.value = recipe['title'];
+            faveButton.setAttributeNode(title);
+        faveButton.addEventListener('click', addFave); 
         var cls2 = document.createAttribute("class");
-        cls2.value = 'favorite';
-        faveButton.setAttributeNode(cls2);
-        // create view recipe button with title, custom attribute, event listener, and class
-        var viewButton = document.createElement('button');
-        var text = document.createTextNode(recipe['title']);
-        viewButton.addEventListener('click', viewRecipe);
-        viewButton.appendChild(text);
-        var cls3 = document.createAttribute("class");
-        cls3.value = 'viewButton';
-        viewButton.setAttributeNode(cls3);
-        var rid = document.createAttribute("data_id");
-        rid.value = recipe['recipe_id'];
-        viewButton.setAttributeNode(rid);
-        // add favorite button to tile
+            cls2.value = 'favorite';
+            faveButton.setAttributeNode(cls2);
+            // add favorite button to tile
         li.appendChild(faveButton);
-        // add view recipe button to tile
-        li.appendChild(viewButton);
-        // return tile to calling function to be added to page
         return li;
-
 }
 
 // creates recipe tiles from individual favorite recipes
 // same as render recipes except faveButton event removes from favorites.
+// also has data_id and recipe_id for ad
 function renderFavoriteList(recipe) {
-    var li = document.createElement("li"); // each recipe in list item
-        var cls = document.createAttribute("class");
-        cls.value = 'recipeTile ' + recipe['recipe_id'];
-        
-        li.setAttributeNode(cls);
+    const li = createRecipeTile(recipe);
+    const faveButton = createFaveButton(recipe);
+    var cls2 = document.createAttribute("class");
+        cls2.value = 'favorite favorited'; // DIFFERENT
+        faveButton.setAttributeNode(cls2);
+    li.appendChild(faveButton);
+    faveButton.addEventListener('click', removeFave);
+    return li;
+    
+    
+}
+function createRecipeTile(recipe) {
+    var li = document.createElement("li"); 
+        // create and add class to tile
+        var cls = document.createAttribute("class"); 
+            cls.value = 'recipeTile ' + recipe['recipe_id'];
+            li.setAttributeNode(cls);
+        // add background image to tile
         li.style.backgroundImage = "url(" + recipe['image_url'] + ")";
         li.style.backgroundSize = "cover";
         li.style.backgroundPosition = "center center";
-        // favorite button
-        var faveButton = document.createElement("button"); // favorite button
-        var title = document.createTextNode("Add to Favorites"); // favorite text
-        var id = document.createAttribute("id");
-        id.value = recipe['recipe_id'];
-        faveButton.addEventListener('click', removeFave); // assemble button
-        //faveButton.appendChild(title);
-        var span = document.createElement('span');
-        var fa = document.createAttribute("class");
-        
-        fa.value = "fa fa-heart"
-        span.setAttributeNode(fa);
-        faveButton.setAttributeNode(id);
-        faveButton.appendChild(span);
-        var cls2 = document.createAttribute("class");
-        cls2.value = 'favorite favorited';
-        faveButton.setAttributeNode(cls2);
         var viewButton = document.createElement('button');
         var text = document.createTextNode(recipe['title']);
+            viewButton.appendChild(text);
         viewButton.addEventListener('click', viewRecipe);
-        viewButton.appendChild(text);
         var cls3 = document.createAttribute("class");
-        cls3.value = 'viewButton';
-        viewButton.setAttributeNode(cls3);
+            cls3.value = 'viewButton';
+            viewButton.setAttributeNode(cls3);
         var rid = document.createAttribute("data_id");
-        rid.value = recipe['recipe_id'];
-        viewButton.setAttributeNode(rid);
-        li.appendChild(faveButton);
-        //li.appendChild(img);
+            rid.value = recipe['recipe_id'];
+            viewButton.setAttributeNode(rid);
+        // add view recipe button to tile
         li.appendChild(viewButton);
+        // return tile to calling function
         return li;
 }
+function createFaveButton(recipe) {
+    var faveButton = document.createElement("button"); // favorite button
+    var id = document.createAttribute("id");
+        id.value = recipe['recipe_id'];
+        faveButton.setAttributeNode(id); 
+    var span = document.createElement('span');
+    var fa = document.createAttribute("class");
+        fa.value = "fa fa-heart"
+        span.setAttributeNode(fa);
+        faveButton.appendChild(span);
+    return faveButton;
+}
+
+
+

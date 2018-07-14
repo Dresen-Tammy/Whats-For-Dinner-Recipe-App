@@ -13,28 +13,30 @@ access.getPersonFromDb = function (username, callback) {
         var params = [username];
         pool.query(sql, params, function(err, result){
             if (err) {
-                console.log("An error with the database occured");
+                console.log("An error with the database occured while gettin person");
                 callback(err, null);
-            }
-            console.log("Found DB result: " + JSON.stringify(result.rows));
+            } else {
+            console.log("Got person from db");
+            console.log(result.rows);
             callback(null, result.rows);
+            }
         })
     }
 
 // insert chef into database
 access.setPersonInDb = function (username, password, salt, callback) {
     console.log('setting person');
-    var sql = "INSERT INTO chef VALUES (default, $1::varchar, $2::varchar, $3::varchar)";
+    var sql = "INSERT INTO chef VALUES (default, $1::varchar, $2::varchar, $3::varchar) RETURNING username";
     var params = [username, password, salt];
     pool.query(sql, params, function(err, result){
         if (err) {
-            console.log("An error with the database occured");
-            console.log(err);
+            console.log("An error with the database occured while setting person");
             callback(err, null);
-        } 
-        console.log("inserted into database") ;
-        callback(null, result);
-        
+        } else {
+        console.log("inserted person into database") ;
+        console.log(result.rows);
+        callback(null, result.rows);
+        }
     })
 }
 // get recipe from database
@@ -45,11 +47,11 @@ access.getRecipeFromDb = function (recipe_id, callback) {
     pool.query(sql, params, function(err, result) {
         if (err) {
             console.log("an error with the database occured in get recipe");
-            console.log(err);
             callback(err, null);
+        } else {
+            console.log('recipe retrieved from database')
+            callback(null, result.rows);
         }
-
-        callback(null, result.rows);
     })
 }
 // get recipeId from database
@@ -60,11 +62,11 @@ access.getRecipeIdFromDb = function (id, callback) {
     pool.query(sql, params, function(err, result) {
         if (err) {
             console.log("an error with the database occured in get recipeId");
-            console.log(err);
             callback(err, null);
+        } else {
+            console.log('recipe id retrieved from database.')
+            callback(null, result.rows);
         }
-
-        callback(null, result.rows);
     })
 }
 // get all recipes from database
@@ -75,9 +77,10 @@ access.getAllRecipesFromDb = function(callback) {
             console.log("an error with database occurred");
             console.log(err);
             callback(err, null);
+        } else {
+            console.log("all recipes retrieved from database");
+            callback(null, result);
         }
-        console.log("Db results: " + JSON.stringify(result.rows));
-        callback(null, result);
     })
 }
 // get favorites from db
@@ -87,11 +90,13 @@ access.getFavoritesFromDb = function (chef_id, callback) {
     pool.query(sql, params, function(err, result) {
         if (err) {
             console.log("An error with the database occurred in getFavorites");
-            console.log(err);
             callback(err, null);
+        } else {
+            console.log("Favorites retrieved from database.")
+            callback(null, result);
         } 
         
-        callback(null, result);
+        
 
     })
 }
@@ -103,12 +108,10 @@ access.getFavoriteByTitle = function (chef_id, recipe_id, callback) {
     pool.query(sql, params, function(err, result) {
         if (err) {
             console.log("An error occured in getFavoritesByTitle");
-            
             callback(err, null);
         } else {
             console.log('Success in getFavoritesByTitle');
-        
-        callback(null, result.rows);
+            callback(null, result.rows);
         }
         
     })
@@ -121,11 +124,10 @@ access.setFavoriteInDb = function (recipe_id, chef_id, callback) {
     pool.query(sql, params, function(err, result) {
         if (err) {
             console.log("An error with the database occurred in setFavorite");
-            console.log(err);
             callback(err, null);
         } else {
-        console.log("Success in setFavorite");
-        callback(null, result);
+            console.log("Success in setFavorite");
+            callback(null, result);
         }
     })
 }
@@ -137,12 +139,12 @@ access.deleteFavoriteFromDb = function(chef_id, recipe_id, callback) {
     pool.query(sql, params, function(err, result) {
         if (err) {
             console.log("An error with the database occurred");
-            console.log(err);
             callback(err, null);
             
         } else {
+            console.log("favorite deleted from database")
             callback(null, result);
-    }
+        }
     })
 }
 // add recipe to db
@@ -154,9 +156,10 @@ access.setRecipeInDb = function(recipe_id, title, image_url, callback) {
         if (err) {
             console.log("An error with the database occured in set recipe");
             callback(err, null);
+        } else {
+            console.log("Found DB result " + JSON.stringify(result.rows));
+            callback(null, result);
         }
-        console.log("Found DB result " + JSON.stringify(result.rows));
-        callback(null, result);
     })
 }
     module.exports = access;

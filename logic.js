@@ -1,45 +1,39 @@
 const access = require('./access.js');
-const fetch = require('node-fetch');
-const http = require('http');
+//const fetch = require('node-fetch');
+//const http = require('http');
 const {isEmailValid, getSalt, getHash} = require('./util');
-//const bcrypt = require('bcrypt');
 
-//var crypto = require('crypto'),
- // algorithm = 'aes-256-ctr',
- // password = '5th7LreP';
-
-const session = require('express-session');
+//const session = require('express-session');
 var logic = {};
 
-
-
-
-logic.login = function (req, response, next) {
+// logging in
+logic.login = function (req, res, next) {
     console.log('logging in')
     var username = req.body.username;
     var pword = req.body.password;
+    if (!username || !pword) {
+        res.status(500)
+           .json({success:false, message: "Please fill in all fields."})
+    }
     access.getPersonFromDb(username, function(err, result) {
         if (err) {
-            response.status(500).json({success:false, message: "Error logging in."});
+            res.status(500).json({success:false, message: "Error logging in. Please try again"});
         } else if (result == null || result.length != 1) {
-            response.json({success:false, message: "Username or password is incorrect1."});
+            console.log('wrong username');
+            res.status(401)
+               .json({success:false, message: "Username or password is incorrect."});
         } else {
-            console.log("Input Password", req.body.password);
-            
-            console.log("password from db", result[0].password);
+            console.log('checking password');
             let password = result[0].password;
             let hash = getHash(result[0].salt, req.body.password);
-            console.log("Hashed password", hash);
-            console.log(hash);
-           // var decipher = crypto.createDecipher(algorithm, password)
-           // var dec = decipher.update(result[0].password, 'hex', 'utf8')
-           // dec += decipher.final('utf8');
-           // if (req.params.password === dec) {
+            //console.log("Hashed password", hash);
+            //console.log(hash);
                if (hash == password) { 
                     req.session.chef_id = result[0].id;
-                    response.json({chef_id: result[0].id})
+                    res.json({chef_id: result[0].id})
                 } else {
-                    response.status(200).json({success:false, message: "Username or password is incorrect2."})
+                    res.status(401)
+                       .json({success:false, message: "Username or password is incorrect."})
                 }  
         }
     }) 
@@ -48,31 +42,25 @@ logic.login = function (req, response, next) {
 logic.register = function(req,res) {
     console.log('registering');
     var username = req.body.username;
-    access.getPersonFromDb(username, function(err, result) {
-        if (err) {
-            res.status(500).json({success:false, message: "error registering."});
-        } else if (result === undefined) {
-            res.status(400).json({success:false, message: "Username already registered."});
+    access.getPersonFromDb(username, function(err, result) { // see if person is in db
+        if (err) { // if err, return error message
+            console.log("error registering");
+            res.status(500).json({success:false, message: "error registering. Please try again."});
+        } else if (result[0]) { // if username is already in database, return error message
+            console.log('username already exists');
+            res.status(401).json({success:false, message: "Username already registered. Login or choose a different username."});
         } else {
-                //var cipher = crypto.createCipher(algorithm, password);
-                //var crypted = cipher.update(req.body.password, 'utf8', 'hex')
-                //crypted += cipher.final('hex');
-                //access.setPersonInDb(username, crypted, function(err, result) {
+            console.log('username not taken, registering');
                     var username = req.body.username; 
                     var password = req.body.password;   
                     var salt = getSalt();
                     var hash = getHash(salt, password);
                     access.setPersonInDb(username, hash, salt, function(err, result) {
                         if (err) {
-                            res.status(500).json({success:false, message: "Error registering."}); 
+                            res.status(500).json({success:false, message: "Error registering. Please try again"}); 
                         } else {
-                            access.getPersonFromDb(username, function(err, result) {
-                                if (err) {
-                                    res.status(500).json({success:false, message: "Error registering."}); 
-                                } else {
-                                    res.json({username: result[0].username});
-                                }
-                            })
+                            res.json({username: result[0].username}); 
+                          
                         }
                     })
                 
@@ -88,14 +76,21 @@ logic.logout = function(req,res) {
     if(req.session.chef_id != null) {
     req.session.destroy((err) =>{
         if (err) {
-            res.json({success: false})
+            res.json({success: false, message: "Error logging out."})
         } else {
-        console.log({message: "logged out"});
-        res.json({success:true, message: "logged out"});
+            if (!req.session) {
+                console.log({message: "logged out"});
+                res.json({success:true, message: "Logged out."});
+            } else {
+                res.status(401)
+                   .json({success: false, message: "Error logging out."});
+            }
+        
         }
     })    
     } else {
-        res.json({success: false});
+        res.status(401)
+           .json({success: false, message: "Error logging out."});
     }
 }
 
@@ -103,3 +98,4 @@ logic.logout = function(req,res) {
 
 
 module.exports = logic;
+
