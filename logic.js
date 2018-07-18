@@ -73,6 +73,7 @@ logic.register = function(req,res) {
 
 logic.logout = function(req,res) {
     // TODO sign out of session
+    console.log('logging out');
     if(req.session.chef_id != null) {
     req.session.destroy((err) =>{
         if (err) {
@@ -98,4 +99,3 @@ logic.logout = function(req,res) {
 
 
 module.exports = logic;
-

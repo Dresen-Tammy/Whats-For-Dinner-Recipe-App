@@ -4,19 +4,6 @@ const access = require('../access.js');
 var router = express.Router();
 
 
-// checks for session. If no, delivers login page. If yes, continues.
-/* router.use(function checkLoggedIn(req,res,next) {
-    if (req.session.chef_id) {
-        console.log("checking chef_id",req.session.chef_id);
-        next()
-    } else {
-        console.log('no work')
-        res.render('pages/login', {
-            title: 'Login',
-            link: 'login'
-        });
-    }
-}); */
 // checks if logged in. If so get favorites, if not, delivers login page.
 router.get('/getFavorites', function(req,res) {
     console.log('getting favorites');

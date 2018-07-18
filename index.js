@@ -18,6 +18,8 @@ const recipesRouter = require('./routes/recipes.js');
 const app = express();
 var sess = {
     secret: process.env.SECRET,
+    resave: true, 
+    saveUninitialized: true,
     cookie: {}
   }
    
@@ -43,7 +45,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // register bodyParser middleware for processing forms.
 app.use(bodyParser.urlencoded({ extended: true})); // supports encoded bodies
 app.use(bodyParser.json()); // supports json encoded bodies
-app.use(session({secret: 'specialized', resave: true, saveUninitialized: true}));
 
 /* ***************** Routes for not logged in ****************/
 // gets password and username, checks if in db, if not, registers user.
