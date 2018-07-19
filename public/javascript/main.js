@@ -109,7 +109,7 @@
             // get the returned list of recipes
             var list = res.recipes.recipes;
             // set message
-            message.innerText = "Search Results";
+            document.querySelector('.galleryTitle').innerText = "Search Results";
             // turn recipe list into recipe tiles for display
             var recipes = renderList(list);
             // get parent ul for recipes
