@@ -218,11 +218,9 @@ border-bottom: solid .5px #a2ac5f;
     top: 15px;
     right: 15px;
 }
-.next {
-    
-}
+
 .hidden {
-    display: hidden;
+    visibility: hidden;
 }
 .bottomButtons {
     display: flex;
