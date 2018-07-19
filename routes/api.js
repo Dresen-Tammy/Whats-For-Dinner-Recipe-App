@@ -12,27 +12,17 @@ var router = express.Router();
 
 /* GET recipes from Food2Fork API*/
 
-// check to see if logged in. If yes, next, if no, render login.
-router.use(function checkLoggedIn(req, res, next) {
-    if (req.session.chef_id) {
-        console.log("checking chef")
-        next();
-    } else {
-        res.render('pages/login', {
-            title: "Login",
-            link: "login"
-        })
-    }
-})
 // get recipe search.
 router.get('/searchRecipes/:keyword/:page', function(req,res,next) {
     console.log("Getting recipe Search from API")
+    req.session.page = req.params.page;
     var keyword = req.params.keyword;
     var page = req.params.page;
+    req.session.page = req.params.page;
     var request = f2f_search_url+"&q="+keyword+"&page="+page;
     axios.get(request)
          .then((response)=> {
-             res.json(response.data);
+             res.json({success: true, recipes: response.data, page: req.session.page});
          }).catch((error)=> {
              console.log("error getting recipes.");
              res.status(401)
