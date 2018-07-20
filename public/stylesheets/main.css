@@ -276,6 +276,10 @@ border-bottom: solid .5px #a2ac5f;
     .one-recipe {
         max-height: 450px;
     }
+    .register {
+        float: none;
+        margin-top: 10px;
+    }
 }
 @media screen and (min-width: 900px) {
     .searchForm, .favoriteField {
