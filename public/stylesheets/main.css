@@ -17,14 +17,15 @@ html {
     border-radius: 10px;
 }
 input {
-    font-size: 14px;
+    font-size: 16px;
+    width: 100px;
 }
 .login, .register, .favoriteButton, .searchButton {
     padding: 1px 8px;
-
+    color: white;
     background-color: #a2ac5f;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 20px;
 }
 .reg {
     font-size: 10px;
@@ -35,7 +36,7 @@ label {
     width: 80px;
     display: inline-block;
     margin-top: 10px;
-    font-size: 18px;
+    font-size: 20px;
 }
 .register {
     float: right;
@@ -45,7 +46,7 @@ label {
 }
 .recipeList {
     display: flex;
-    flex-flow: row wrap;
+    flex-wrap: wrap;
     width: 100%;
     list-style: none;
     margin: 0 auto;
@@ -56,7 +57,7 @@ label {
     width: 100%;
     height: 100vw;
     border: .5px solid gray;
-    background-color: light-gray;
+    
     padding: 0;
     position:relative;
     margin:5px 5px;
@@ -92,7 +93,7 @@ footer p {
 }
 h2 {
     display: inline-block;
-    font-size: 18px;
+    font-size: 16px;
     text-align: center;
     margin-right: 10px;
     margin-top: 10px;
@@ -123,7 +124,7 @@ h2 {
     text-align: center;
     padding: 13px 5px;
     border: none;
-    font-size: 15px;
+    font-size: 20px;
     min-height: 60px;
 }
 .viewButton:hover {
@@ -136,7 +137,7 @@ h2 {
 .one-recipe {
     width: 100%;
     
-    max-height: 450px;
+    
     overflow: auto;
     margin: 20px auto;
     padding: 10px;
@@ -145,10 +146,13 @@ h2 {
     border-radius: 10px;
 }
 .one-image {
-    width: 30%;
+    width: 100%;
     float: left;
     margin-right: 30px;
     align-self: flex-start;
+}
+.one-info {
+    margin-top: 20px;
 }
 .hero {
     list-style: none;
@@ -167,6 +171,7 @@ h2 {
 }
 .info {
     display: flex;
+    flex-flow: wrap;
 }
 .one-recipe a {
     padding: 5px;
@@ -227,7 +232,7 @@ border-bottom: solid .5px #a2ac5f;
     justify-content: space-between;
 }
 
-@media(min-width: 400px) {
+@media screen and (min-width: 400px)  {
     .recipeTile {
         width: 49%;
         height: 49vw;
@@ -238,8 +243,11 @@ border-bottom: solid .5px #a2ac5f;
         width: 49%;
         margin: 5px 0;
     } 
+    .one-image {
+        width: 50%;
+    }
 }
-@media(min-width: 600px) {
+@media screen and (min-width: 600px)  {
     .recipeTile {
         width: 33%;
         height: 33vw;
@@ -249,15 +257,34 @@ border-bottom: solid .5px #a2ac5f;
     .noTile {
         width: 33%;
     }
+    h2 {
+        font-size: 20px;
+    }
+    input {
+        width: 200px;
+        font-size: 20px;
+    }
+    .one-image {
+        width: 30%;
+    }
+    .one-info {
+        margin-top: 0;
+    }
+    .info {
+        flex-flow: nowrap;
+    }
+    .one-recipe {
+        max-height: 450px;
+    }
 }
-@media(min-width: 700px) {
+@media screen and (min-width: 900px) {
     .searchForm, .favoriteField {
         width: 50%;
     }
     
     
 }
-@media(min-width: 800px) {
+@media (min-width: 800px) {
     .recipeTile {
         width: 24.5%;
         height: 24.5vw;
@@ -266,9 +293,10 @@ border-bottom: solid .5px #a2ac5f;
     } 
     .noTile {
         width: 24.5%;
+        margin: 5px 0;
     }  
 }
-@media(min-width: 1000px) {
+@media screen and (min-width: 1000px) {
     .recipeTile {
         width: 19.5%;
         height: 19.5vw;
