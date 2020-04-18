@@ -1,4 +1,4 @@
-require('dotenv').config;
+require('dotenv').config();
 /* ********* Require Modules ************/
 const express = require('express');
 // for getting params from path
