@@ -1,51 +1,29 @@
-    <% include ../partials/header %>
-    <body>
+<% include ../partials/head %>
+<header>
     <h1 id="headline"><%= title %></h1>
     <button class="logout" onclick="logout()">Logout</button>
     <div class="topArea" id="top">
+</header>
+<main>
     <div class="searchForm">
-        
         <h2>Get New Recipes</h2>
         <input class="search" name="keyword" id='keyword' type="text" placeholder="keyword" required>
-        <button class="searchButton" id="search" value="1" >Search</button>
+        <button class="searchButton" id="search" value="0">Search</button>
     </div>
     <div class="favoriteField">
         <h2 >View your Favorites</h2>
-    <button class="favoriteButton" onclick="getFavorites()">Favorites</button>
-</div>
-</div>
+        <button class="favoriteButton" onclick="getFavorites()">Favorites</button>
+    </div>
     <div class="error" id="error"></div>
     <div class="gallery">
-            <h2 class="galleryTitle"></h2>
-    <ul class="hero" id="hero"></ul>
-    <ul class="recipeList">
-            <li class="one-recipe">
-                <h2>Berry shortbread cheesecake slice</h2>
-                <div class="info">
-                    <img class="one-image" src="http://static.food2fork.com/681682_MEDIUM2eb0.jpg" alt="Berry shortbread cheesecake slice">
-                    <div class="one-info">
-                        <h3>Ingredients:</h3>
-                        <ul class="one-list">
-                            <li>200g pack shortbread biscuits</li>
-                            <li>50g butter , melted</li>
-                            <li>2 x 300g tubs soft cheese</li>
-                            <li>1 x 200g tub crme frache</li>
-                            <li>1 tsp vanilla extract</li>
-                            <li>175g golden caster sugar</li>
-                            <li>2 tbsp plain flour</li>
-                            <li>2 eggs</li>
-                            <li>5 tbsp seedless raspberry jam</li>
-                            <li>300g mixed summer berries , such as raspberries, redcurrants, cherries and blueberries</li>
-                        </ul>
-                        <a href="http://www.bbcgoodfood.com/recipes/681682/berry-shortbread-cheesecake-slice" target="_blank">Directions</a>
-                    </div>
-                </div>
-            </li>
-    </ul>
-    <div class="bottomButtons">
-        <button id="prev" class="searchButton prev hidden" value="" >Previous</button> 
-        <span class="page"></span>
-        <button id="next" class="searchButton next hidden" value="" >Next</button> 
+        <h2 class="galleryTitle"></h2>
+        <ul class="hero" id="hero"></ul>
+        <ul class="recipeList">
+        </ul>
+        <div class="bottomButtons">
+            <span class="page"></span>
+            <button id="next" class="searchButton next hidden" value="" >Next</button> 
+        </div>
     </div>
-</div>
-    <% include ../partials/footer %>
+</main>
+<% include ../partials/footer %>

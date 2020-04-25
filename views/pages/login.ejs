@@ -1,24 +1,22 @@
-<% include ../partials/header %>
-<h1>What's For Dinner</h1>
-<div class="headerImage"></div>
-<div class="error" id="error"></div>
-</div>
-
-<div id="userInput">
+<% include ../partials/head %>
+<header>
+    <h1>What's For Dinner</h1>
+    <div class="headerImage"></div>
+    <div class="error" id="error"></div>
+</header>
+<main>
+    <div id="userInput">
         <h2>Login</h2><br>
-    <label for="username">Username</label>
-    <input name="username" type="text" id="username" required><br>
-    <label for="password">Password</label>
-    <input name="password" type="password" id="password" required><br><br>
-    <input type="button" value="login" id="login" class="login" onclick="loginUser()">
-    <input type="button" value="register" id='register' class="register" onclick="registerUser()">
-  
-</div>
-<div id="output">
-    <ul class="recipeList">
-
-    </ul>
-
-</div>
-
+        <label for="username">Username</label>
+        <input name="username" type="text" id="username" required><br>
+        <label for="password">Password</label>
+        <input name="password" type="password" id="password" required><br><br>
+        <input type="button" value="login" id="login" class="login" onclick="loginUser()">
+        <input type="button" value="register" id='register' class="register" onclick="registerUser()">
+    </div>
+    <div id="output">
+        <ul class="recipeList">
+        </ul> 
+    </div>
+</main>
 <% include ../partials/footer %>

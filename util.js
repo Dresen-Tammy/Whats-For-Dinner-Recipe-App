@@ -1,4 +1,4 @@
-// Devin Cenatiempo helped me with this.
+// uses crypto to salt and hash passwords before storing
 const crypto = require('crypto'); 
 const validator = require('email-validator'); 
 let util = {};  
