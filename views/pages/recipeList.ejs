@@ -1,24 +1,24 @@
-    <% include ../partials/header %>
-    <body>
+<% include ../partials/head %>
+<header>
     <h1 id="headline"><%= title %></h1>
     <button class="logout" onclick="logout()">Logout</button>
     <div class="topArea" id="top">
+</header>
+<main>
     <div class="searchForm">
-        
         <h2>Get New Recipes</h2>
         <input class="search" name="keyword" id='keyword' type="text" placeholder="keyword" required>
-        <button class="searchButton" id="search" value="1" >Search</button>
+        <button class="searchButton" id="search" value="0">Search</button>
     </div>
     <div class="favoriteField">
         <h2 >View your Favorites</h2>
-    <button class="favoriteButton" onclick="getFavorites()">Favorites</button>
-</div>
-</div>
+        <button class="favoriteButton" onclick="getFavorites()">Favorites</button>
+    </div>
     <div class="error" id="error"></div>
     <div class="gallery">
-            <h2 class="galleryTitle"></h2>
-    <ul class="hero" id="hero"></ul>
-    <ul class="recipeList">
+        <h2 class="galleryTitle"></h2>
+        <ul class="hero" id="hero"></ul>
+        <ul class="recipeList">
             <li class="one-recipe">
                 <h2>Berry shortbread cheesecake slice</h2>
                 <div class="info">
@@ -41,11 +41,11 @@
                     </div>
                 </div>
             </li>
-    </ul>
-    <div class="bottomButtons">
-        <button id="prev" class="searchButton prev hidden" value="" >Previous</button> 
-        <span class="page"></span>
-        <button id="next" class="searchButton next hidden" value="" >Next</button> 
+        </ul>
+        <div class="bottomButtons">
+            <span class="page"></span>
+            <button id="next" class="searchButton next hidden" value="10" >Next</button> 
+        </div>
     </div>
-</div>
-    <% include ../partials/footer %>
+</main>
+<% include ../partials/footer %>

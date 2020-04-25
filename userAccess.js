@@ -1,12 +1,42 @@
-const access = require('./access.js');
-//const fetch = require('node-fetch');
-//const http = require('http');
-const {isEmailValid, getSalt, getHash} = require('./util');
+// logic for logging in, registering, logging out
 
-//const session = require('express-session');
+// import dbAccess to db
+const dbAccess = require('./dbAccess.js');
+// uses crypto to salt and hash passwords
+const {getSalt, getHash} = require('./util');
+
 var logic = {};
 
-// logging in
+logic.register = function(req,res) {
+    var username = req.body.username;
+    dbAccess.getPersonFromDb(username, function(err, result) { // see if person is in db
+        if (err) { // if err, return error message
+            console.log("error registering");
+            res.status(500).json({success:false, message: "error registering. Please try again."});
+        } else if (result[0]) { // if username is already in database, return error message
+            console.log('username already exists');
+            res.status(401).json({success:false, message: "Username already registered. Login or choose a different username."});
+        } else {
+            console.log('username not taken, registering');
+                    var username = req.body.username; 
+                    var password = req.body.password;   
+                    var salt = getSalt();
+                    var hash = getHash(salt, password);
+                    dbAccess.setPersonInDb(username, hash, salt, function(err, result) {
+                        if (err) {
+                            res.status(500).json({success:false, message: "Error registering. Please try again"}); 
+                        } else {
+                            res.json({username: result[0].username}); 
+                          
+                        }
+                    })
+                
+            
+        }
+    })
+
+}
+
 logic.login = function (req, res, next) {
     console.log('logging in')
     var username = req.body.username;
@@ -15,7 +45,7 @@ logic.login = function (req, res, next) {
         res.status(500)
            .json({success:false, message: "Please fill in all fields."})
     }
-    access.getPersonFromDb(username, function(err, result) {
+    dbAccess.getPersonFromDb(username, function(err, result) {
         if (err) {
             res.status(500).json({success:false, message: "Error logging in. Please try again"});
         } else if (result == null || result.length != 1) {
@@ -39,36 +69,6 @@ logic.login = function (req, res, next) {
     }) 
 }
 
-logic.register = function(req,res) {
-    console.log('registering');
-    var username = req.body.username;
-    access.getPersonFromDb(username, function(err, result) { // see if person is in db
-        if (err) { // if err, return error message
-            console.log("error registering");
-            res.status(500).json({success:false, message: "error registering. Please try again."});
-        } else if (result[0]) { // if username is already in database, return error message
-            console.log('username already exists');
-            res.status(401).json({success:false, message: "Username already registered. Login or choose a different username."});
-        } else {
-            console.log('username not taken, registering');
-                    var username = req.body.username; 
-                    var password = req.body.password;   
-                    var salt = getSalt();
-                    var hash = getHash(salt, password);
-                    access.setPersonInDb(username, hash, salt, function(err, result) {
-                        if (err) {
-                            res.status(500).json({success:false, message: "Error registering. Please try again"}); 
-                        } else {
-                            res.json({username: result[0].username}); 
-                          
-                        }
-                    })
-                
-            
-        }
-    })
-
-}
 
 
 logic.logout = function(req,res) {

@@ -4,10 +4,10 @@ const pool = new Pool({connectionString: connectionString});
 
 
 
-// access is an object hat will ahve several methods. When access is required in index.js, methods are available
-var access = {};
+// dbAccess is an object that has several methods. When dbAccess is required in index.js, methods are available
+var dbAccess = {};
 // get one chef from the database
-access.getPersonFromDb = function (username, callback) {
+dbAccess.getPersonFromDb = function (username, callback) {
         console.log('Back from the getPersonFromDb function with username: ', username);
         var sql = "SELECT id, username, password, salt FROM chef WHERE username = $1::varchar";
         var params = [username];
@@ -24,7 +24,7 @@ access.getPersonFromDb = function (username, callback) {
     }
 
 // insert chef into database
-access.setPersonInDb = function (username, password, salt, callback) {
+dbAccess.setPersonInDb = function (username, password, salt, callback) {
     console.log('setting person');
     var sql = "INSERT INTO chef VALUES (default, $1::varchar, $2::varchar, $3::varchar) RETURNING username";
     var params = [username, password, salt];
@@ -40,7 +40,7 @@ access.setPersonInDb = function (username, password, salt, callback) {
     })
 }
 // get recipe from database
-access.getRecipeFromDb = function (recipe_id, callback) {
+dbAccess.getRecipeFromDb = function (recipe_id, callback) {
     console.log('getting recipe');
     var sql = "SELECT id FROM recipe WHERE recipe_id = $1::varchar";
     var params = [recipe_id];
@@ -55,7 +55,7 @@ access.getRecipeFromDb = function (recipe_id, callback) {
     })
 }
 // get recipeId from database
-access.getRecipeIdFromDb = function (id, callback) {
+dbAccess.getRecipeIdFromDb = function (id, callback) {
     console.log('getting recipe');
     var sql = "SELECT recipe_id FROM recipe WHERE id = $1::int";
     var params = [id];
@@ -70,7 +70,7 @@ access.getRecipeIdFromDb = function (id, callback) {
     })
 }
 // get all recipes from database
-access.getAllRecipesFromDb = function(callback) {
+dbAccess.getAllRecipesFromDb = function(callback) {
     var sql = "SELECT id, recipe_id, title, image_url FROM recipe";
     pool.query(sql, function(err, result) {
         if (err) {
@@ -84,7 +84,7 @@ access.getAllRecipesFromDb = function(callback) {
     })
 }
 // get favorites from db
-access.getFavoritesFromDb = function (chef_id, callback) {
+dbAccess.getFavoritesFromDb = function (chef_id, callback) {
     var sql = "SELECT r.id, r.recipe_id, r.title, r.image_url FROM recipe r INNER JOIN favorite f ON r.id = f.rid WHERE f.chef_id = $1::int";
     var params = [chef_id];
     pool.query(sql, params, function(err, result) {
@@ -100,7 +100,7 @@ access.getFavoritesFromDb = function (chef_id, callback) {
 
     })
 }
-access.getFavoriteByTitle = function (chef_id, recipe_id, callback) {
+dbAccess.getFavoriteByTitle = function (chef_id, recipe_id, callback) {
     var sql = "SELECT id FROM favorite WHERE chef_id = $1::int AND rid = (SELECT id FROM recipe WHERE recipe_id = $2::varchar)";
     var params = [chef_id, recipe_id];
     console.log(chef_id);
@@ -117,7 +117,7 @@ access.getFavoriteByTitle = function (chef_id, recipe_id, callback) {
     })
 }
 // add favorite to db
-access.setFavoriteInDb = function (recipe_id, chef_id, callback) {
+dbAccess.setFavoriteInDb = function (recipe_id, chef_id, callback) {
     
     var sql = "INSERT INTO favorite VALUES (default, $1::int, (SELECT id FROM recipe WHERE recipe_id = $2::varchar))";
     var params = [chef_id, recipe_id];
@@ -132,7 +132,7 @@ access.setFavoriteInDb = function (recipe_id, chef_id, callback) {
     })
 }
 // delete favorite from database
-access.deleteFavoriteFromDb = function(chef_id, recipe_id, callback) {
+dbAccess.deleteFavoriteFromDb = function(chef_id, recipe_id, callback) {
     console.log('deleting from favorite');
     var sql = "DELETE FROM favorite WHERE chef_id = $1::int AND rid = (SELECT id FROM recipe WHERE recipe_id = $2::varchar) RETURNING chef_id";
     var params = [chef_id, recipe_id];
@@ -148,7 +148,7 @@ access.deleteFavoriteFromDb = function(chef_id, recipe_id, callback) {
     })
 }
 // add recipe to db
-access.setRecipeInDb = function(recipe_id, title, image_url, callback) {
+dbAccess.setRecipeInDb = function(recipe_id, title, image_url, callback) {
     console.log('adding recipe');
     var sql = "INSERT INTO recipe VALUES (default, $1::varchar, $2::varchar, $3::text) RETURNING id";
     var params = [recipe_id, title, image_url];
@@ -162,4 +162,4 @@ access.setRecipeInDb = function(recipe_id, title, image_url, callback) {
         }
     })
 }
-    module.exports = access;
+    module.exports = dbAccess;

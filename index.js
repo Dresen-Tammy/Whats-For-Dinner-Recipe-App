@@ -1,3 +1,4 @@
+// uses .env file for process.env variables
 require('dotenv').config();
 /* ********* Require Modules ************/
 const express = require('express');
@@ -7,9 +8,9 @@ const path = require('path');
 const bodyParser = require('body-parser');
 // for saving session variables to protect recipe part of app from unlogged users
 const session = require('express-session');
-// custom module that has all the logic of server
-const logic = require('./logic.js');
-// custom module that has logic for paths that access Food2Fork API
+// custom module that has all the userAccess of server
+const userAccess = require('./userAccess.js');
+// custom module that has access for paths that access Food2Fork API
 const apiRouter = require('./routes/api.js');
 // custom module that has routes behind logged in
 const recipesRouter = require('./routes/recipes.js');
@@ -48,9 +49,9 @@ app.use(bodyParser.json()); // supports json encoded bodies
 
 /* ***************** Routes for not logged in ****************/
 // gets password and username, checks if in db, if not, registers user.
-app.post('/register', logic.register); //logic.register
+app.post('/register', userAccess.register);
 // gets password and username, checks against db, logs in, and saves session variable.
-app.post('/login', logic.login);
+app.post('/login', userAccess.login);
 
 app.use(function checkLoggedIn(req,res,next) {
     if (req.session.chef_id) {
@@ -68,7 +69,7 @@ app.use(function checkLoggedIn(req,res,next) {
 app.get('/', (req,res) =>{
         res.render('pages/recipeList.ejs', {
             title: "What's For Dinner?",
-            link: 'searchRecipes',
+            link: 'searchSpRecipes',
             galleryTitle: ""
         });
    
@@ -76,7 +77,7 @@ app.get('/', (req,res) =>{
 
 
 /* *********** routes for logged in only ***********/
-app.get('/logout', logic.logout);
+app.get('/logout', userAccess.logout);
 app.use('/recipes', recipesRouter);
 app.use('/api', apiRouter);
 
