@@ -71,7 +71,7 @@ dbAccess.getRecipeIdFromDb = function (id, callback) {
 }
 // get all recipes from database
 dbAccess.getAllRecipesFromDb = function(callback) {
-    var sql = "SELECT id, recipe_id, title, image_url FROM recipe";
+    var sql = "SELECT id, recipe_id, title, image_url as image FROM recipe";
     pool.query(sql, function(err, result) {
         if (err) {
             console.log("an error with database occurred");
@@ -85,7 +85,7 @@ dbAccess.getAllRecipesFromDb = function(callback) {
 }
 // get favorites from db
 dbAccess.getFavoritesFromDb = function (chef_id, callback) {
-    var sql = "SELECT r.id, r.recipe_id, r.title, r.image_url FROM recipe r INNER JOIN favorite f ON r.id = f.rid WHERE f.chef_id = $1::int";
+    var sql = "SELECT r.id as faveId, r.recipe_id as id, r.title, r.image_url as image FROM recipe r INNER JOIN favorite f ON r.id = f.rid WHERE f.chef_id = $1::int";
     var params = [chef_id];
     pool.query(sql, params, function(err, result) {
         if (err) {
